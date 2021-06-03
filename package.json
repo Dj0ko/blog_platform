@@ -61,6 +61,11 @@
       "npm run lint:fix",
       "npm run prettier",
       "git add"
+    ],
+    "*.js": [
+      "npm run lint:fix",
+      "npm run prettier",
+      "git add"
     ]
   }
 }
