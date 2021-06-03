@@ -57,12 +57,7 @@
     }
   },
   "lint-staged": {
-    "*.jsx": [
-      "npm run lint:fix",
-      "npm run prettier",
-      "git add"
-    ],
-    "*.js": [
+    "*.jsx, *.js": [
       "npm run lint:fix",
       "npm run prettier",
       "git add"

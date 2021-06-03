@@ -1,1 +1,7 @@
-console.log(`hellow worldsss`);
+const sss = () => {
+  const xss = 0;
+
+  return xss + 1;
+}
+
+sss();
