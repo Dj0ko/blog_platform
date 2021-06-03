@@ -1,5 +1,5 @@
 const sss = () => {
-  const xss = 0;
+  const xss = 2;
 
   return xss + 1;
 }
