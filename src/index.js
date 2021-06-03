@@ -1,7 +1,7 @@
-const sss = () => {
-  const xss = 2;
+const sss = (  sdf) => {
+  const xss = 2
 
-  return xss + 1;
+  return sdf + xss;
 }
 
-sss();
+sss(3)
