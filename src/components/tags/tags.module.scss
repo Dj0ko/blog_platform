@@ -1,0 +1,16 @@
+.article__tags-list {
+  display: flex;
+  min-height: 20px;
+  margin: 5px 0;
+}
+
+.articles__tags-list-item {
+  margin-right: 8px;
+  padding: 0 5px;
+  line-height: 15px;
+  color: rgba(0, 0, 0, 0.75);
+  text-transform: capitalize;
+
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+}

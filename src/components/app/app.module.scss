@@ -1,0 +1,85 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../../fonts/Inter/Inter-Regular.woff') format('woff'),
+    url('../../fonts/Inter/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+$Inter: 'Inter', 'Arial', sans-serif;
+$black: rgba(0, 0, 0, 0.85);
+$gray: #e5e5e5;
+
+body {
+  margin: 0;
+  font-family: $Inter;
+
+  font-size: 12px;
+  line-height: 22px;
+  color: $black;
+  background-color: $gray;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+p,
+button,
+h1,
+h2 {
+  padding: 0;
+  margin: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 22px;
+  min-height: 80px;
+
+  background-color: white;
+}
+
+.title {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: normal;
+}
+
+.page-header__button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 237px;
+}
+
+.header__button {
+  width: 109px;
+  padding: 20px 0;
+
+  cursor: pointer;
+}
+
+.button {
+  font-family: inherit;
+  font-size: 18px;
+  line-height: 28px;
+
+  border: none;
+  background-color: transparent;
+
+  &--active {
+    color: #52c41a;
+    border: 1px solid #52c41a;
+    border-radius: 5px;
+  }
+}
+
+.page-main {
+  padding-top: 26px;
+  padding-bottom: 18px;
+}
