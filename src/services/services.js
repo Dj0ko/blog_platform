@@ -1,5 +1,5 @@
 class RealWorldDbService {
-  async getListArticles(offSet) {
+  async getArticlesList(offSet) {
     const res = await fetch(
       `https://conduit.productionready.io/api/articles?offset=${offSet === 1 ? 0 : (offSet - 1) * 5 - 1}&limit=5`
     );

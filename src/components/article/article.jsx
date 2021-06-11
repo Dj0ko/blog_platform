@@ -17,7 +17,7 @@ const Article = ({ article }) => {
   } = article;
 
   return (
-    <li className={`${classes['articles-list__item']} ${classes.article}`}>
+    <article className={classes.article}>
       <div>
         <div className={classes['article__title-container']}>
           <h2 className={classes.article__title}>{title}</h2>
@@ -33,7 +33,7 @@ const Article = ({ article }) => {
           <p className={classes['user-info__text']}>{format(new Date(createdAt), 'PP')}</p>
         </div>
       </div>
-    </li>
+    </article>
   );
 };
 
