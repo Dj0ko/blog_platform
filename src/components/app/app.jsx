@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import realWorldDbService from '../../services/services';
 import ArticlesList from '../articles-list/articles-list';
-import ArticleFull from '../article-full/article-full';
+import ArticlePage from '../article-page/article-page';
 import Spinner from '../spinner/spinner';
 import { articlesFetchDataSuccess, hasSpinner, hasError } from '../../redux/actions/actions';
 
@@ -18,7 +18,9 @@ const App = ({ articlesFetchData, currentPage, loadingState }) => {
   return (
     <Router>
       <header className={classes['page-header']}>
-        <h1 className={classes.title}>Realworld Blog</h1>
+        <Link to="/">
+          <h1 className={classes.title}>Realworld Blog</h1>
+        </Link>
         <div className={classes['page-header__button-container']}>
           <button type="button" className={`${classes.header__button} ${classes.button}`}>
             Sign In
@@ -29,15 +31,15 @@ const App = ({ articlesFetchData, currentPage, loadingState }) => {
         </div>
       </header>
       <main className={classes['page-main']}>
+        <Route path="/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
         <Route path="/article" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
-        <Route path="/article-full" component={ArticleFull} />
+        <Route path="/article/:id" render={({ match }) => <ArticlePage itemId={match.params.id} />} />
       </main>
     </Router>
   );
 };
 
 const mapStateToProps = (state) => ({
-  articlesList: state.articlesReducer,
   currentPage: state.pageReducer,
   loadingState: state.loadingReducer,
 });

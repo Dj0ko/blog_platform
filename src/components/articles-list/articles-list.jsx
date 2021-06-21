@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Pagination } from 'antd';
-import Article from '../article/article';
+import ArticleHeader from '../article-header/article-header';
 import Spinner from '../spinner/spinner';
 import ErrorMessage from '../error-message/error-message';
 
@@ -22,12 +22,12 @@ const ArticlesList = ({ articlesList, onChangePage, currentPage, error }) => {
     return <Spinner />;
   }
 
-  const allArticles = articles.map((article) => (
+  const allArticles = articles.map((article, id) => (
     <li
       className={`${classes['articles-list__item']} ${classes.article}`}
       key={`${article.title + article.author.username + article.createdAt}`}
     >
-      <Article article={article} />
+      <ArticleHeader article={article} id={id} />
     </li>
   ));
 

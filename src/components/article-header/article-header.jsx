@@ -1,30 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import Tags from '../tags/tags';
 
-import classes from './article.module.scss';
+import classes from './article-header.module.scss';
 
-const Article = ({ article }) => {
+const ArticleHeader = ({ article, style }) => {
   const {
     title,
     favoritesCount,
     tagList,
-    body,
+    description,
+    slug,
     createdAt,
     author: { image, username },
   } = article;
 
   return (
-    <article className={classes.article}>
+    <article className={classes['article-header']} style={style}>
       <div>
-        <div className={classes['article__title-container']}>
-          <h2 className={classes.article__title}>{title}</h2>
-          <span className={classes.article__likes}>{favoritesCount}</span>
+        <div className={classes['article-header__title-container']}>
+          <Link to={`/article/${slug}`}>
+            <h2 className={classes['article-header__title']}>{title}</h2>
+          </Link>
+          <span className={classes['article-header__likes']}>{favoritesCount}</span>
         </div>
         <Tags taglist={tagList} />
-        <p className={classes.article__text}>{body}</p>
+        <p className={classes['article-header__text']}>{description}</p>
       </div>
       <div className={classes['user-info']}>
         <img src={image} className={classes['user-info__image']} width="46px" height="46px" alt="users avatar" />
@@ -37,13 +41,14 @@ const Article = ({ article }) => {
   );
 };
 
-export default Article;
+export default ArticleHeader;
 
-Article.defaultProps = {
+ArticleHeader.defaultProps = {
   article: {},
+  style: {},
 };
 
-Article.propTypes = {
+ArticleHeader.propTypes = {
   article: PropTypes.objectOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -53,4 +58,5 @@ Article.propTypes = {
       PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
     ])
   ),
+  style: PropTypes.objectOf(PropTypes.string),
 };
