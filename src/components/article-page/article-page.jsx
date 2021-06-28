@@ -14,7 +14,7 @@ const ArticlePage = ({ articles, itemId }) => {
 
   const articleHeaderStyle = {
     color: 'rgba(0, 0, 0, 0.5)',
-    'margin-bottom': '0',
+    marginBottom: '0',
     filter: 'none',
   };
 

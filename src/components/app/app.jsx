@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import realWorldDbService from '../../services/services';
 import ArticlesList from '../articles-list/articles-list';
 import ArticlePage from '../article-page/article-page';
+import SignUp from '../sign-up/sign-up';
+import SignIn from '../sign-in/sign-in';
 import Spinner from '../spinner/spinner';
 import { articlesFetchDataSuccess, hasSpinner, hasError } from '../../redux/actions/actions';
 
@@ -22,18 +24,20 @@ const App = ({ articlesFetchData, currentPage, loadingState }) => {
           <h1 className={classes.title}>Realworld Blog</h1>
         </Link>
         <div className={classes['page-header__button-container']}>
-          <button type="button" className={`${classes.header__button} ${classes.button}`}>
+          <Link to="/sign-in" className={`${classes.header__button} ${classes.button}`}>
             Sign In
-          </button>
-          <button type="button" className={`${classes.header__button} ${classes.button} ${classes['button--active']}`}>
+          </Link>
+          <Link to="/sign-up" className={`${classes.header__button} ${classes.button} ${classes['button--active']}`}>
             Sign Up
-          </button>
+          </Link>
         </div>
       </header>
       <main className={classes['page-main']}>
         <Route path="/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
-        <Route path="/article" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
+        <Route path="/article/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
         <Route path="/article/:id" render={({ match }) => <ArticlePage itemId={match.params.id} />} />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/sign-in" component={SignIn} />
       </main>
     </Router>
   );

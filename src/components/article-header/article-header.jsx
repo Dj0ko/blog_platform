@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import Tags from '../tags/tags';
 
 import classes from './article-header.module.scss';
 
-const ArticleHeader = ({ article, style }) => {
+const ArticleHeader = ({ article, style, history }) => {
   const {
     title,
     favoritesCount,
@@ -22,9 +22,16 @@ const ArticleHeader = ({ article, style }) => {
     <article className={classes['article-header']} style={style}>
       <div>
         <div className={classes['article-header__title-container']}>
-          <Link to={`/article/${slug}`}>
-            <h2 className={classes['article-header__title']}>{title}</h2>
-          </Link>
+          <h2 className={classes['article-header__title']}>
+            <a
+              role="button"
+              onClick={() => history.push(`article/${slug}`)}
+              onKeyDown={() => history.push(`article/${slug}`)}
+              tabIndex={0}
+            >
+              {title}
+            </a>
+          </h2>
           <span className={classes['article-header__likes']}>{favoritesCount}</span>
         </div>
         <Tags taglist={tagList} />
@@ -41,7 +48,7 @@ const ArticleHeader = ({ article, style }) => {
   );
 };
 
-export default ArticleHeader;
+export default withRouter(ArticleHeader);
 
 ArticleHeader.defaultProps = {
   article: {},
@@ -59,4 +66,7 @@ ArticleHeader.propTypes = {
     ])
   ),
   style: PropTypes.objectOf(PropTypes.string),
+  history: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.objectOf(PropTypes.string), PropTypes.func])
+  ).isRequired,
 };

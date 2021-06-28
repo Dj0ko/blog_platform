@@ -14,3 +14,20 @@ export const hasSpinner = (payload) => ({
 });
 
 export const hasError = () => ({ type: 'HAS_ERROR' });
+
+export const changeUserdata = (type, payload) => ({
+  type,
+  payload,
+});
+
+export const clearData = () => ({ type: 'CLEAR_DATA' });
+
+export const signUp = (payload) => ({
+  type: 'SIGN_UP',
+  payload,
+});
+
+export const signIn = (payload) => ({
+  type: 'SIGN_IN',
+  payload,
+});
