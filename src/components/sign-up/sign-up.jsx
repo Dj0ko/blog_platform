@@ -1,38 +1,51 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
 
 import * as actions from '../../redux/actions/actions';
 import classes from './sign-up.module.scss';
 
-const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => {
+const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
+  // Деструктурируем useForm()
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({ mode: 'onSubmit' });
+
+  // Переходим на страничку Логина, если прошли регистрацию
   if (isSignedUp) {
     return <Redirect to="/sign-in" />;
   }
 
-  const handleCnahge = (evt) => {
-    switch (evt.target.id) {
-      case 'username':
-        return changeUserdata('SET_USERNAME', evt.target.value);
-
-      case 'email':
-        return changeUserdata('SET_EMAIL', evt.target.value);
-
-      case 'password':
-        return changeUserdata('SET_PASSWORD', evt.target.value);
-
-      default:
-        return '';
-    }
+  // Отправляем форму и проверяем на наличие ошибок от сервера
+  const onSubmit = (data) => {
+    realWorldDbService.registrationNewUser(data).then((body) => {
+      console.log(body);
+      if (body.errors) {
+        getServerErrors(body.errors);
+      } else {
+        signUp(true);
+      }
+    });
   };
+
+  // Деструктурируем ошибки
+  const { email, username } = serverErrors;
 
   return (
     <section className={classes['sign-up']}>
       <h2 className={classes['sign-up__title']}>Create new account</h2>
-      <form className={classes.form} method="POST" action="https://conduit.productionready.io/api/users">
+      <form
+        className={classes.form}
+        method="POST"
+        action="https://conduit.productionready.io/api/users"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <fieldset className={classes.form__fieldset}>
           <label className={classes.form__field}>
             <span>Username</span>
@@ -42,8 +55,12 @@ const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => 
               id="username"
               name="username"
               placeholder="Username"
-              onChange={handleCnahge}
+              {...register('username', { required: true, minLength: 3, maxLength: 20 })}
             />
+            {errors.username && (
+              <p className={classes.form__error}>Your username needs to be from 3 to 20 characters.</p>
+            )}
+            {username && <p className={classes.form__error}>This username has already use.</p>}
           </label>
 
           <label className={classes.form__field}>
@@ -54,8 +71,10 @@ const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => 
               id="email"
               name="email"
               placeholder="Email address"
-              onChange={handleCnahge}
+              {...register('email', { required: true, pattern: /\S+@\S+\.\S+/ })}
             />
+            {errors.email && <p className={classes.form__error}>Your mail must be a correct post address.</p>}
+            {email && <p className={classes.form__error}>This email has already use.</p>}
           </label>
 
           <label className={classes.form__field}>
@@ -66,8 +85,11 @@ const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => 
               id="password"
               name="password"
               placeholder="Password"
-              onChange={handleCnahge}
+              {...register('password', { required: true, minLength: 6, maxLength: 40 })}
             />
+            {errors.password && (
+              <p className={classes.form__error}>Your password needs to be from 6 to 40 characters.</p>
+            )}
           </label>
 
           <label className={classes.form__field}>
@@ -78,24 +100,34 @@ const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => 
               id="repeatPassword"
               name="repeatPassword"
               placeholder="Password"
+              {...register('repeatPassword', {
+                required: true,
+                validate: (value) => {
+                  if (value === watch('password')) {
+                    return true;
+                  }
+                  return 'The passwords do not match';
+                },
+              })}
             />
+            {errors.repeatPassword && <p className={classes.form__error}>The passwords do not match.</p>}
           </label>
         </fieldset>
 
         <label>
-          <input type="checkbox" id="agreeCheckbox" name="agreeCheckbox" />
+          <input
+            type="checkbox"
+            id="agreeCheckbox"
+            name="agreeCheckbox"
+            {...register('checkbox', { required: true })}
+          />
           <span className={classes.form__text}>I agree to the processing of my personal information</span>
+          {errors.checkbox && (
+            <p className={classes.form__error}>You have to agree to the processing of your personal information.</p>
+          )}
         </label>
 
-        <button
-          type="button"
-          className={classes.form__button}
-          onClick={() => {
-            realWorldDbService.registrationNewUser(userData);
-            signUp(true);
-            clearData();
-          }}
-        >
+        <button type="submit" className={classes.form__button}>
           Create
         </button>
       </form>
@@ -110,26 +142,22 @@ const SignUp = ({ changeUserdata, signUp, userData, isSignedUp, clearData }) => 
 };
 
 const mapStateToProps = (state) => ({
-  userData: {
-    user: state.userDataReducer,
-  },
   isSignedUp: state.signUpReducer,
+  serverErrors: state.serverErrorsReducer,
 });
 
 export default connect(mapStateToProps, actions)(SignUp);
 
 SignUp.defaultProps = {
-  changeUserdata: () => {},
   signUp: () => {},
-  userData: {},
   isSignedUp: false,
-  clearData: () => {},
+  serverErrors: {},
+  getServerErrors: () => {},
 };
 
 SignUp.propTypes = {
-  changeUserdata: PropTypes.func,
   signUp: PropTypes.func,
-  userData: PropTypes.objectOf(PropTypes.objectOf),
   isSignedUp: PropTypes.bool,
-  clearData: PropTypes.func,
+  serverErrors: PropTypes.objectOf(PropTypes.objectOf),
+  getServerErrors: PropTypes.func,
 };

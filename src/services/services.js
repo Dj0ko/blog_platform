@@ -13,31 +13,35 @@ class RealWorldDbService {
   }
 
   async registrationNewUser(data) {
+    const newUser = {
+      user: data,
+    };
     const res = await fetch(`https://conduit.productionready.io/api/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(newUser),
     });
 
     const body = await res.json();
-    console.log(body);
 
     return body;
   }
 
   async loginUser(data) {
+    const newUser = {
+      user: data,
+    };
     const res = await fetch(`https://conduit.productionready.io/api/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(newUser),
     });
 
     const body = await res.json();
-    console.log(body);
 
     return body;
   }

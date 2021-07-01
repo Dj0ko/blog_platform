@@ -34,53 +34,6 @@ h2 {
   margin: 0;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 22px;
-  min-height: 80px;
-
-  background-color: white;
-}
-
-.title {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: normal;
-}
-
-.page-header__button-container {
-  display: flex;
-  justify-content: space-between;
-  width: 237px;
-}
-
-.header__button {
-  width: 109px;
-  padding: 20px 0;
-
-  cursor: pointer;
-}
-
-.button {
-  font-family: inherit;
-  font-size: 18px;
-  line-height: 28px;
-  text-align: center;
-  color: inherit;
-
-  border: none;
-  background-color: transparent;
-
-  &--active {
-    color: #52c41a;
-    border: 1px solid #52c41a;
-    border-radius: 5px;
-  }
-}
-
 .page-main {
   padding-top: 26px;
   padding-bottom: 18px;

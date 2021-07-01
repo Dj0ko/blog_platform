@@ -15,13 +15,6 @@ export const hasSpinner = (payload) => ({
 
 export const hasError = () => ({ type: 'HAS_ERROR' });
 
-export const changeUserdata = (type, payload) => ({
-  type,
-  payload,
-});
-
-export const clearData = () => ({ type: 'CLEAR_DATA' });
-
 export const signUp = (payload) => ({
   type: 'SIGN_UP',
   payload,
@@ -29,5 +22,15 @@ export const signUp = (payload) => ({
 
 export const signIn = (payload) => ({
   type: 'SIGN_IN',
+  payload,
+});
+
+export const setCurrentUser = (payload) => ({
+  type: 'SET_CURRENT_USER',
+  payload,
+});
+
+export const getServerErrors = (payload) => ({
+  type: 'GET_SERVER_ERROR',
   payload,
 });

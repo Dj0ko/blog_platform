@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import realWorldDbService from '../../services/services';
+import Header from '../header/header';
 import ArticlesList from '../articles-list/articles-list';
 import ArticlePage from '../article-page/article-page';
 import SignUp from '../sign-up/sign-up';
@@ -19,19 +20,7 @@ const App = ({ articlesFetchData, currentPage, loadingState }) => {
 
   return (
     <Router>
-      <header className={classes['page-header']}>
-        <Link to="/">
-          <h1 className={classes.title}>Realworld Blog</h1>
-        </Link>
-        <div className={classes['page-header__button-container']}>
-          <Link to="/sign-in" className={`${classes.header__button} ${classes.button}`}>
-            Sign In
-          </Link>
-          <Link to="/sign-up" className={`${classes.header__button} ${classes.button} ${classes['button--active']}`}>
-            Sign Up
-          </Link>
-        </div>
-      </header>
+      <Header />
       <main className={classes['page-main']}>
         <Route path="/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
         <Route path="/article/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
