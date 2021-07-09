@@ -25,7 +25,6 @@ const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
   // Отправляем форму и проверяем на наличие ошибок от сервера
   const onSubmit = (data) => {
     realWorldDbService.registrationNewUser(data).then((body) => {
-      console.log(body);
       if (body.errors) {
         getServerErrors(body.errors);
       } else {
@@ -85,7 +84,7 @@ const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
               id="password"
               name="password"
               placeholder="Password"
-              {...register('password', { required: true, minLength: 6, maxLength: 40 })}
+              {...register('password', { required: true, minLength: 8, maxLength: 40 })}
             />
             {errors.password && (
               <p className={classes.form__error}>Your password needs to be from 6 to 40 characters.</p>

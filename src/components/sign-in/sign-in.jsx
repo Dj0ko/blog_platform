@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
@@ -9,7 +8,7 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './sign-in.module.scss';
 
-const SignIn = ({ signIn, isLoggedIn, getServerErrors, serverErrors, setCurrentUser }) => {
+const SignIn = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentUser }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -22,12 +21,15 @@ const SignIn = ({ signIn, isLoggedIn, getServerErrors, serverErrors, setCurrentU
     return <Redirect to="/article/" />;
   }
 
+  // Отправляем форму и проверяем на наличие ошибок от сервера
   const onSubmit = (data) => {
     realWorldDbService.loginUser(data).then((body) => {
       if (body.errors) {
         getServerErrors(body.errors);
       } else {
-        setCurrentUser(body);
+        sessionStorage.setItem('user', JSON.stringify(body.user));
+        sessionStorage.setItem('signIn', true);
+        setCurrentUser(body.user);
         signIn(true);
       }
     });
@@ -94,17 +96,17 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, actions)(SignIn);
 
 SignIn.defaultProps = {
-  signIn: () => {},
   isLoggedIn: false,
   getServerErrors: () => {},
   serverErrors: {},
+  signIn: () => {},
   setCurrentUser: () => {},
 };
 
 SignIn.propTypes = {
-  signIn: PropTypes.func,
   isLoggedIn: PropTypes.bool,
   getServerErrors: PropTypes.func,
   serverErrors: PropTypes.objectOf(PropTypes.objectOf),
+  signIn: PropTypes.func,
   setCurrentUser: PropTypes.func,
 };

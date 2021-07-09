@@ -9,6 +9,7 @@ import ArticlesList from '../articles-list/articles-list';
 import ArticlePage from '../article-page/article-page';
 import SignUp from '../sign-up/sign-up';
 import SignIn from '../sign-in/sign-in';
+import Profile from '../profile/profile';
 import Spinner from '../spinner/spinner';
 import { articlesFetchDataSuccess, hasSpinner, hasError } from '../../redux/actions/actions';
 
@@ -27,6 +28,7 @@ const App = ({ articlesFetchData, currentPage, loadingState }) => {
         <Route path="/article/:id" render={({ match }) => <ArticlePage itemId={match.params.id} />} />
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-in" component={SignIn} />
+        <Route path="/profile" component={Profile} />
       </main>
     </Router>
   );
