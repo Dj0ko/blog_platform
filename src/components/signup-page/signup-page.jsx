@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
 
 import * as actions from '../../redux/actions/actions';
-import classes from './sign-up.module.scss';
+import classes from './signup-page.module.scss';
 
-const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
+const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -37,8 +37,8 @@ const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
   const { email, username } = serverErrors;
 
   return (
-    <section className={classes['sign-up']}>
-      <h2 className={classes['sign-up__title']}>Create new account</h2>
+    <section className={classes['signup-page']}>
+      <h2 className={classes['signup-page__title']}>Create new account</h2>
       <form
         className={classes.form}
         method="POST"
@@ -130,9 +130,9 @@ const SignUp = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
           Create
         </button>
       </form>
-      <p className={classes['sign-up__text']}>
+      <p className={classes['signup-page__text']}>
         Already have an account?
-        <Link to="/sign-in" className={classes['sign-up__text--margin-left']}>
+        <Link to="/sign-in" className={classes['signup-page__text--margin-left']}>
           Sign In
         </Link>
       </p>
@@ -145,16 +145,16 @@ const mapStateToProps = (state) => ({
   serverErrors: state.serverErrorsReducer,
 });
 
-export default connect(mapStateToProps, actions)(SignUp);
+export default connect(mapStateToProps, actions)(SignUpPage);
 
-SignUp.defaultProps = {
+SignUpPage.defaultProps = {
   signUp: () => {},
   isSignedUp: false,
   serverErrors: {},
   getServerErrors: () => {},
 };
 
-SignUp.propTypes = {
+SignUpPage.propTypes = {
   signUp: PropTypes.func,
   isSignedUp: PropTypes.bool,
   serverErrors: PropTypes.objectOf(PropTypes.objectOf),

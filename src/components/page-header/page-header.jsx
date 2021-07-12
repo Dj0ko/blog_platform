@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import * as actions from '../../redux/actions/actions';
-import classes from './header.module.scss';
+import classes from './page-header.module.scss';
 
-const Header = ({ isLoggedIn, signIn, currentUser }) => {
+const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
   useEffect(() => signIn(sessionStorage.getItem('signIn')));
   if (isLoggedIn || (sessionStorage.getItem('signIn') && sessionStorage.getItem('signIn') !== 'false')) {
     const userData = () => {
@@ -24,12 +24,13 @@ const Header = ({ isLoggedIn, signIn, currentUser }) => {
           <h1 className={classes.title}>Realworld Blog</h1>
         </Link>
         <div>
-          <button
+          <Link
+            to="/new-article"
             type="button"
             className={`${classes.button} ${classes['button--green']} ${classes['button--loggedin']}`}
           >
             Create article
-          </button>
+          </Link>
           <Link to="/profile">
             <span className={classes.user__text}>{username}</span>
             <img src={image} className={classes.user__image} width="46px" height="46px" alt="user avatar" />
@@ -74,15 +75,15 @@ const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer,
 });
 
-export default connect(mapStateToProps, actions)(Header);
+export default connect(mapStateToProps, actions)(PageHeader);
 
-Header.defaultProps = {
+PageHeader.defaultProps = {
   isLoggedIn: false,
   signIn: () => {},
   currentUser: {},
 };
 
-Header.propTypes = {
+PageHeader.propTypes = {
   isLoggedIn: PropTypes.bool,
   signIn: PropTypes.func,
   currentUser: PropTypes.objectOf(PropTypes.objectOf),

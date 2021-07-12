@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
 
 import * as actions from '../../redux/actions/actions';
-import classes from './sign-in.module.scss';
+import classes from './signin-page.module.scss';
 
-const SignIn = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentUser }) => {
+const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentUser }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -36,8 +36,8 @@ const SignIn = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentU
   };
 
   return (
-    <section className={classes['sign-in']}>
-      <h2 className={classes['sign-in__title']}>Sign In</h2>
+    <section className={classes['signin-page']}>
+      <h2 className={classes['signin-page__title']}>Sign In</h2>
       <form
         className={classes.form}
         method="POST"
@@ -78,9 +78,9 @@ const SignIn = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentU
           Login
         </button>
       </form>
-      <p className={classes['sign-in__text']}>
+      <p className={classes['signin-page__text']}>
         Don’t have an account?
-        <Link to="/sign-up" className={classes['sign-in__text--margin-left']}>
+        <Link to="/sign-up" className={classes['signin-page__text--margin-left']}>
           Sign Up
         </Link>
       </p>
@@ -93,9 +93,9 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.logInReducer,
 });
 
-export default connect(mapStateToProps, actions)(SignIn);
+export default connect(mapStateToProps, actions)(SignInPage);
 
-SignIn.defaultProps = {
+SignInPage.defaultProps = {
   isLoggedIn: false,
   getServerErrors: () => {},
   serverErrors: {},
@@ -103,7 +103,7 @@ SignIn.defaultProps = {
   setCurrentUser: () => {},
 };
 
-SignIn.propTypes = {
+SignInPage.propTypes = {
   isLoggedIn: PropTypes.bool,
   getServerErrors: PropTypes.func,
   serverErrors: PropTypes.objectOf(PropTypes.objectOf),

@@ -1,0 +1,107 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('../../fonts/Roboto/Roboto-Medium.woff') format('woff'),
+    url('../../fonts/Roboto/Roboto-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('../../fonts/Roboto/Roboto-Regular.woff') format('woff'),
+    url('../../fonts/Roboto/Roboto-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+$Roboto: 'Roboto', 'Arial', sans-serif;
+
+.new-article {
+  width: 938px;
+  margin: 0 auto;
+  margin-top: 33px;
+  padding: 48px 32px;
+
+  font-family: $Roboto;
+  font-size: 14px;
+  line-height: 22px;
+  color: #262626;
+
+  background-color: #ffffff;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  box-shadow: 0px 22px 106px rgba(0, 0, 0, 0.07), 0px 9.19107px 44.2843px rgba(0, 0, 0, 0.0503198),
+    0px 4.91399px 23.6765px rgba(0, 0, 0, 0.0417275), 0px 2.75474px 13.2728px rgba(0, 0, 0, 0.035),
+    0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725), 0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802);
+}
+
+.new-article__title {
+  margin-bottom: 21px;
+
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+
+  text-align: center;
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 21px;
+
+  &--tag {
+    display: flex;
+  }
+}
+
+.form__input {
+  padding: 8px 12px;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+
+  &--tag {
+    width: 300px;
+    margin-right: 20px;
+  }
+}
+
+.form__button {
+  padding: 8px 0;
+
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  background-color: #1890ff;
+
+  border-radius: 4px;
+  border-style: none;
+
+  &--new-article {
+    width: 319px;
+  }
+
+  &--control {
+    width: 100px;
+    margin-right: 20px;
+
+    font-size: 14px;
+    line-height: 22px;
+
+    background-color: #ffffff;
+  }
+
+  &--delete {
+    margin-bottom: 5px;
+    color: rgba(245, 34, 45, 1);
+    border: 1px solid rgba(245, 34, 45, 1);
+  }
+
+  &--add {
+    color: rgba(24, 144, 255, 1);
+    border: 1px solid rgba(24, 144, 255, 1);
+  }
+}

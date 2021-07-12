@@ -114,6 +114,7 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors })
             {errors.repeatPassword && <p className={classes.form__error}>The passwords do not match.</p>}
           </label>
         </fieldset>
+
         <button type="submit" className={classes.form__button}>
           Save
         </button>
