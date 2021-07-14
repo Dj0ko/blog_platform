@@ -1,0 +1,48 @@
+.form__input {
+  padding: 8px 12px;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+
+  &--tag {
+    width: 300px;
+    margin-right: 20px;
+  }
+}
+
+.form__button {
+  padding: 8px 0;
+
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  background-color: #1890ff;
+
+  border-radius: 4px;
+  border-style: none;
+
+  &--new-article {
+    width: 319px;
+  }
+
+  &--control {
+    width: 100px;
+    margin-right: 20px;
+
+    font-size: 14px;
+    line-height: 22px;
+
+    background-color: #ffffff;
+  }
+
+  &--delete {
+    margin-bottom: 5px;
+    color: rgba(245, 34, 45, 1);
+    border: 1px solid rgba(245, 34, 45, 1);
+  }
+
+  &--add {
+    color: rgba(24, 144, 255, 1);
+    border: 1px solid rgba(24, 144, 255, 1);
+  }
+}

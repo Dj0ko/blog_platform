@@ -34,3 +34,13 @@ export const getServerErrors = (payload) => ({
   type: 'GET_SERVER_ERROR',
   payload,
 });
+
+export const addTag = (payload) => ({
+  type: 'ADD_TAG',
+  payload,
+});
+
+export const removeTag = (payload) => ({
+  type: 'REMOVE_TAG',
+  payload,
+});

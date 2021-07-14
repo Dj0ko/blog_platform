@@ -8,6 +8,7 @@ import signUpReducer from './signup-reducer';
 import logInReducer from './login-reducer';
 import currentUserReducer from './currentuser-reducer';
 import serverErrorsReducer from './servererrors-reducer';
+import tagsReducer from './tags-reducer';
 
 export default combineReducers({
   articlesReducer,
@@ -18,4 +19,5 @@ export default combineReducers({
   logInReducer,
   currentUserReducer,
   serverErrorsReducer,
+  tagsReducer,
 });
