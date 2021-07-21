@@ -3,6 +3,9 @@ const articlesReducer = (state = {}, action) => {
     case 'ARTICLES_FETCH_DATA_SUCCESS':
       return { ...state, ...action.articles };
 
+    case 'ADD_NEW_ARTICLE':
+      return { articles: [action.payload, ...state.articles], articlesCount: state.articlesCount };
+
     default:
       return state;
   }

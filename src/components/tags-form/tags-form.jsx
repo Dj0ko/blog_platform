@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -6,7 +8,7 @@ import Tag from '../tag/tag';
 import * as actions from '../../redux/actions/actions';
 import classes from './tags-form.module.scss';
 
-const TagsForm = ({ tagsList, addTag }) => {
+const TagsForm = ({ tagsList, addTag, isEditOn, tags }) => {
   const [label, setLabel] = useState('');
 
   const onLabelChange = (evt) => {
@@ -18,7 +20,7 @@ const TagsForm = ({ tagsList, addTag }) => {
     setLabel('');
   };
 
-  const allTags = tagsList.map((tag, index) => (
+  const allTags = (isEditOn ? tags : tagsList).map((tag, index) => (
     <li key={tag}>
       <Tag tag={tag} id={index} />
     </li>
@@ -31,7 +33,6 @@ const TagsForm = ({ tagsList, addTag }) => {
         <input
           className={`${classes.form__input} ${classes['form__input--tag']}`}
           type="text"
-          id="tag1"
           name="tag1"
           placeholder="Tag"
           onChange={onLabelChange}
@@ -47,7 +48,6 @@ const TagsForm = ({ tagsList, addTag }) => {
           type="button"
           className={`${classes.form__button} ${classes['form__button--control']} ${classes['form__button--add']}`}
           onClick={onButtonAdd}
-          // onClick={() => addTag(onLabelChange())}
         >
           Add Tag
         </button>
@@ -58,6 +58,7 @@ const TagsForm = ({ tagsList, addTag }) => {
 
 const mapStateToProps = (state) => ({
   tagsList: state.tagsReducer,
+  isEditOn: state.editReducer,
 });
 
 export default connect(mapStateToProps, actions)(TagsForm);
@@ -65,9 +66,11 @@ export default connect(mapStateToProps, actions)(TagsForm);
 TagsForm.defaultProps = {
   tagsList: [],
   addTag: () => {},
+  isEditOn: false,
 };
 
 TagsForm.propTypes = {
   tagsList: PropTypes.arrayOf(PropTypes.string),
   addTag: PropTypes.func,
+  isEditOn: PropTypes.bool,
 };

@@ -65,6 +65,55 @@ class RealWorldDbService {
 
     return body;
   }
+
+  async addNewArticle(data, token) {
+    const newArticle = {
+      article: data,
+    };
+
+    const res = await fetch(`https://conduit.productionready.io/api/articles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Token ${token}`,
+      },
+      body: JSON.stringify(newArticle),
+    });
+
+    const body = await res.json();
+
+    return body;
+  }
+
+  async getCurrentArticle(slug) {
+    const res = await fetch(`https://conduit.productionready.io/api/articles/${slug}`);
+
+    if (!res.ok) {
+      throw new Error();
+    }
+
+    const body = await res.json();
+    return body;
+  }
+
+  async updateArticle(data, slug, token) {
+    const newArticle = {
+      article: data,
+    };
+
+    const res = await fetch(`https://conduit.productionready.io/api/articles/${slug}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Token ${token}`,
+      },
+      body: JSON.stringify(newArticle),
+    });
+
+    const body = await res.json();
+
+    return body;
+  }
 }
 
 const realWorldDbService = new RealWorldDbService();

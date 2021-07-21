@@ -25,8 +25,9 @@ const App = ({ articlesFetchData, currentPage, loadingState, isLoggedIn }) => {
       <PageHeader />
       <main className={classes['page-main']}>
         <Route path="/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
-        <Route path="/article/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
-        <Route path="/article/:id" render={({ match }) => <ArticlePage itemId={match.params.id} />} />
+        <Route path="/articles/" render={() => (loadingState ? <Spinner /> : <ArticlesList />)} exact />
+        <Route path="/articles/:id" render={({ match }) => <ArticlePage itemId={match.params.id} />} exact />
+        <Route path="/articles/:id/edit" render={({ match }) => <NewArticle itemId={match.params.id} />} />
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/sign-in" component={SignInPage} />
         <Route path="/profile" component={Profile} />

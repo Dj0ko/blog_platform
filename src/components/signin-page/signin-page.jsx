@@ -18,7 +18,7 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
 
   // Если логин прошел удачно, то переходим на страницу статей
   if (isLoggedIn) {
-    return <Redirect to="/article/" />;
+    return <Redirect to="/articles/" />;
   }
 
   // Отправляем форму и проверяем на наличие ошибок от сервера
@@ -27,8 +27,8 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
       if (body.errors) {
         getServerErrors(body.errors);
       } else {
-        sessionStorage.setItem('user', JSON.stringify(body.user));
-        sessionStorage.setItem('signIn', true);
+        localStorage.setItem('user', JSON.stringify(body.user));
+        localStorage.setItem('signIn', true);
         setCurrentUser(body.user);
         signIn(true);
       }

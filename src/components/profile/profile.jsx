@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
@@ -7,14 +8,16 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './profile.module.scss';
 
-const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors }) => {
+const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, isLoggedIn }) => {
+  // Функция, возвращающая нам нынешнего пользователя(если не удается определить пользователя, то пользуемся кешом localStorage)
   const userData = () => {
     if (JSON.stringify(currentUser).length === 2) {
-      return JSON.parse(sessionStorage.getItem('user'));
+      return JSON.parse(localStorage.getItem('user'));
     }
     return currentUser;
   };
 
+  // Получаем имя пользователя, email и token
   const { username, email, token } = userData();
 
   const {
@@ -23,6 +26,7 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors })
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
+  // Отправляем форму с измененными данными
   const onSubmit = (data) => {
     const newObj = {};
 
@@ -36,7 +40,7 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors })
       if (body.errors) {
         getServerErrors(body.errors);
       } else {
-        sessionStorage.setItem('user', JSON.stringify(body.user));
+        localStorage.setItem('user', JSON.stringify(body.user));
         setCurrentUser(body.user);
       }
     });
@@ -44,6 +48,11 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors })
 
   // Деструктурируем ошибки
   const { email: errorEmail, username: errorUserName } = serverErrors;
+
+  // Возвращаемся на главную страницу, если сделали Log Out
+  if (!isLoggedIn) {
+    return <Redirect to="/articles/" />;
+  }
 
   return (
     <section className={classes.profile}>
@@ -136,6 +145,7 @@ Profile.defaultProps = {
   serverErrors: {},
   currentUser: {},
   setCurrentUser: () => {},
+  isLoggedIn: false,
 };
 
 Profile.propTypes = {
@@ -143,4 +153,5 @@ Profile.propTypes = {
   serverErrors: PropTypes.objectOf(PropTypes.objectOf),
   currentUser: PropTypes.objectOf(PropTypes.objectOf),
   setCurrentUser: PropTypes.func,
+  isLoggedIn: PropTypes.bool,
 };
