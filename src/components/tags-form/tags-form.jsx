@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,7 +6,7 @@ import Tag from '../tag/tag';
 import * as actions from '../../redux/actions/actions';
 import classes from './tags-form.module.scss';
 
-const TagsForm = ({ tagsList, addTag, isEditOn, tags }) => {
+const TagsForm = ({ tagsList, addTag }) => {
   const [label, setLabel] = useState('');
 
   const onLabelChange = (evt) => {
@@ -20,7 +18,7 @@ const TagsForm = ({ tagsList, addTag, isEditOn, tags }) => {
     setLabel('');
   };
 
-  const allTags = (isEditOn ? tags : tagsList).map((tag, index) => (
+  const allTags = tagsList.map((tag, index) => (
     <li key={tag}>
       <Tag tag={tag} id={index} />
     </li>
@@ -66,11 +64,9 @@ export default connect(mapStateToProps, actions)(TagsForm);
 TagsForm.defaultProps = {
   tagsList: [],
   addTag: () => {},
-  isEditOn: false,
 };
 
 TagsForm.propTypes = {
   tagsList: PropTypes.arrayOf(PropTypes.string),
   addTag: PropTypes.func,
-  isEditOn: PropTypes.bool,
 };

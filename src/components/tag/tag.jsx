@@ -18,18 +18,16 @@ const Tag = ({ tag, id, removeTag }) => (
     <button
       type="button"
       className={`${classes.form__button} ${classes['form__button--control']} ${classes['form__button--delete']}`}
-      onClick={() => removeTag(id)}
+      onClick={() => {
+        removeTag(id);
+      }}
     >
       Delete
     </button>
   </>
 );
 
-const mapStateToProps = (state) => ({
-  tagsList: state.tagsReducer,
-});
-
-export default connect(mapStateToProps, actions)(Tag);
+export default connect(null, actions)(Tag);
 
 Tag.defaultProps = {
   tag: '',

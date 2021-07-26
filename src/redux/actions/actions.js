@@ -55,7 +55,7 @@ export const setCurrentArticle = (payload) => ({
   payload,
 });
 
-export const editModeOn = (payload) => ({
-  type: 'EDIT_MODE',
+export const showModal = (payload) => ({
+  type: 'SHOW_MODAL',
   payload,
 });

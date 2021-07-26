@@ -114,6 +114,20 @@ class RealWorldDbService {
 
     return body;
   }
+
+  async deleteArticle(slug, token) {
+    const res = await fetch(`https://conduit.productionready.io/api/articles/${slug}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    const body = await res.json();
+
+    return body;
+  }
 }
 
 const realWorldDbService = new RealWorldDbService();

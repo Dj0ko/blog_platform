@@ -10,7 +10,7 @@ import currentUserReducer from './currentuser-reducer';
 import serverErrorsReducer from './servererrors-reducer';
 import tagsReducer from './tags-reducer';
 import currentArticleReducer from './currentarticle-reducer';
-import editReducer from './edit-reducer';
+import modalReducer from './modal-reducer';
 
 export default combineReducers({
   articlesReducer,
@@ -23,5 +23,5 @@ export default combineReducers({
   serverErrorsReducer,
   tagsReducer,
   currentArticleReducer,
-  editReducer,
+  modalReducer,
 });

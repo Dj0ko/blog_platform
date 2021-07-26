@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -12,7 +13,7 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './article-page.module.scss';
 
-const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, editModeOn }) => {
+const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, addTag, showModal, isModalOn }) => {
   useEffect(
     () => realWorldDbService.getCurrentArticle(itemId).then((body) => setCurrentArticle(body.article)),
     [setCurrentArticle, itemId]
@@ -30,6 +31,13 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, editM
     createdAt,
     author: { image, username },
   } = currentArticle;
+
+  const onButtonDelete = () => {
+    const { token } = JSON.parse(localStorage.getItem('user'));
+    const { slug } = currentArticle;
+
+    realWorldDbService.deleteArticle(slug, token);
+  };
 
   return (
     <div className={classes['article-page']}>
@@ -53,14 +61,18 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, editM
       <section>
         {username === JSON.parse(localStorage.getItem('user')).username ? (
           <div className={classes['article-page__button-container']}>
-            <button type="button" className={`${classes.button} ${classes['button--delete']}`}>
+            <button
+              type="button"
+              className={`${classes.button} ${classes['button--delete']}`}
+              onClick={() => showModal(true)}
+            >
               Delete
             </button>
             <button
               type="button"
               className={`${classes.button} ${classes['button--edit']}`}
               onClick={() => {
-                editModeOn(true);
+                tagList.forEach((tag) => addTag(tag));
                 history.push(`${itemId}/edit`);
               }}
             >
@@ -70,19 +82,39 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, editM
         ) : null}
       </section>
       <ReactMarkdown className={classes['article-page__main']}>{currentArticle.body}</ReactMarkdown>
+      {isModalOn ? (
+        <div className={classes['article-page__modal']}>
+          <p className={classes['article-page__modal-text']}>Are you sure to delete this article?</p>
+          <button
+            type="button"
+            className={`${classes['article-page__modal-button']} ${classes['article-page__modal-button--no']}`}
+            onClick={() => showModal(false)}
+          >
+            No
+          </button>
+          <button
+            type="button"
+            className={`${classes['article-page__modal-button']} ${classes['article-page__modal-button--yes']}`}
+            onClick={onButtonDelete}
+          >
+            Yes
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   currentArticle: state.currentArticleReducer,
+  isModalOn: state.modalReducer,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ArticlePage));
 
 ArticlePage.defaultProps = {
   setCurrentArticle: () => {},
-  editModeOn: () => {},
+  addTag: () => {},
 };
 
 ArticlePage.propTypes = {
@@ -100,5 +132,5 @@ ArticlePage.propTypes = {
   history: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.objectOf(PropTypes.string), PropTypes.func])
   ).isRequired,
-  editModeOn: PropTypes.func,
+  addTag: PropTypes.func,
 };

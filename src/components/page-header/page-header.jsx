@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import * as actions from '../../redux/actions/actions';
 import classes from './page-header.module.scss';
 
-const PageHeader = ({ isLoggedIn, signIn, currentUser, editModeOn }) => {
+const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
   // Устанавливаем флаг, что мы залогинены при перезагрузке страницы
   useEffect(() => signIn(localStorage.getItem('signIn')));
 
@@ -33,7 +33,6 @@ const PageHeader = ({ isLoggedIn, signIn, currentUser, editModeOn }) => {
             to="/new-article"
             type="button"
             className={`${classes.button} ${classes['button--green']} ${classes['button--loggedin']}`}
-            onClick={() => editModeOn(false)}
           >
             Create article
           </Link>
@@ -88,12 +87,10 @@ PageHeader.defaultProps = {
   isLoggedIn: false,
   signIn: () => {},
   currentUser: {},
-  editModeOn: () => {},
 };
 
 PageHeader.propTypes = {
   isLoggedIn: PropTypes.bool,
   signIn: PropTypes.func,
   currentUser: PropTypes.objectOf(PropTypes.objectOf),
-  editModeOn: PropTypes.func,
 };
