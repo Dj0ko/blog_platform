@@ -1,19 +1,28 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import ReactMarkdown from 'react-markdown';
+import PropTypes from 'prop-types';
+
+import realWorldDbService from '../../services/services';
 
 import Spinner from '../spinner/spinner';
 import Tags from '../tags/tags';
-import realWorldDbService from '../../services/services';
+
 import * as actions from '../../redux/actions/actions';
 import classes from './article-page.module.scss';
 
-const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, addTag, showModal, isModalOn }) => {
+const ArticlePage = ({
+  itemId,
+  setCurrentArticle,
+  currentArticle,
+  history,
+  addTag,
+  showModal,
+  isModalOn,
+  hasError,
+}) => {
   useEffect(
     () => realWorldDbService.getCurrentArticle(itemId).then((body) => setCurrentArticle(body.article)),
     [setCurrentArticle, itemId]
@@ -30,13 +39,13 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, addTa
     description,
     createdAt,
     author: { image, username },
+    slug,
   } = currentArticle;
 
   const onButtonDelete = () => {
-    const { token } = JSON.parse(localStorage.getItem('user'));
-    const { slug } = currentArticle;
-
-    realWorldDbService.deleteArticle(slug, token);
+    realWorldDbService.deleteArticle(slug).catch(() => {
+      hasError(true);
+    });
   };
 
   return (
@@ -59,7 +68,7 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, addTa
         </div>
       </article>
       <section>
-        {username === JSON.parse(localStorage.getItem('user')).username ? (
+        {JSON.parse(localStorage.getItem('user')) && username === JSON.parse(localStorage.getItem('user')).username ? (
           <div className={classes['article-page__button-container']}>
             <button
               type="button"
@@ -81,6 +90,7 @@ const ArticlePage = ({ itemId, setCurrentArticle, currentArticle, history, addTa
           </div>
         ) : null}
       </section>
+      <div className={classes['article-page__main']} id="divForMarkdown" />
       <ReactMarkdown className={classes['article-page__main']}>{currentArticle.body}</ReactMarkdown>
       {isModalOn ? (
         <div className={classes['article-page__modal']}>
@@ -115,6 +125,9 @@ export default connect(mapStateToProps, actions)(withRouter(ArticlePage));
 ArticlePage.defaultProps = {
   setCurrentArticle: () => {},
   addTag: () => {},
+  showModal: () => {},
+  isModalOn: false,
+  hasError: () => {},
 };
 
 ArticlePage.propTypes = {
@@ -133,4 +146,7 @@ ArticlePage.propTypes = {
     PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.objectOf(PropTypes.string), PropTypes.func])
   ).isRequired,
   addTag: PropTypes.func,
+  showModal: PropTypes.func,
+  isModalOn: PropTypes.bool,
+  hasError: PropTypes.func,
 };

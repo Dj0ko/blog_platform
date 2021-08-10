@@ -1,24 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+
 import realWorldDbService from '../../services/services';
 
 import * as actions from '../../redux/actions/actions';
 import classes from './profile.module.scss';
 
-const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, isLoggedIn }) => {
+const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, isLoggedIn, hasError }) => {
   // Функция, возвращающая нам нынешнего пользователя(если не удается определить пользователя, то пользуемся кешом localStorage)
-  const userData = () => {
-    if (JSON.stringify(currentUser).length === 2) {
-      return JSON.parse(localStorage.getItem('user'));
-    }
-    return currentUser;
-  };
-
-  // Получаем имя пользователя, email и token
-  const { username, email, token } = userData();
+  // const userData = () => {
+  //   if (JSON.stringify(currentUser).length === 2) {
+  //     return JSON.parse(localStorage.getItem('user'));
+  //   }
+  //   return currentUser;
+  // };
 
   const {
     register,
@@ -30,20 +29,31 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
   const onSubmit = (data) => {
     const newObj = {};
 
+    // for (const key in data) {
+    //   if (data[key] !== currentUser[key] && data[key]) {
+    //     newObj[key] = data[key];
+    //   }
+    // }
+
     for (const key in data) {
-      if (data[key] !== currentUser[key] && data[key]) {
+      if (data[key] !== JSON.parse(localStorage.getItem('user'))[key] && data[key]) {
         newObj[key] = data[key];
       }
     }
 
-    realWorldDbService.editProfile(newObj, token).then((body) => {
-      if (body.errors) {
-        getServerErrors(body.errors);
-      } else {
-        localStorage.setItem('user', JSON.stringify(body.user));
-        setCurrentUser(body.user);
-      }
-    });
+    realWorldDbService
+      .editProfile(newObj)
+      .then((body) => {
+        if (body.errors) {
+          getServerErrors(body.errors);
+        } else {
+          localStorage.setItem('user', JSON.stringify(body.user));
+          // setCurrentUser(body.user);
+        }
+      })
+      .catch(() => {
+        hasError(true);
+      });
   };
 
   // Деструктурируем ошибки
@@ -54,13 +64,18 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
     return <Redirect to="/articles/" />;
   }
 
+  // Получаем имя пользователя, email
+  // const { username, email } = userData();
+  const { username, email } = JSON.parse(localStorage.getItem('user'));
+
   return (
     <section className={classes.profile}>
       <h2 className={classes.profile__title}>Edit Profile</h2>
       <form
         className={classes.form}
         method="PUT"
-        action="https://conduit.productionready.io/api/users"
+        // action="https://conduit.productionready.io/api/users"
+        action="https://conduit-api-realworld.herokuapp.com/api/users"
         onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className={classes.form__fieldset}>
@@ -146,6 +161,7 @@ Profile.defaultProps = {
   currentUser: {},
   setCurrentUser: () => {},
   isLoggedIn: false,
+  hasError: () => {},
 };
 
 Profile.propTypes = {
@@ -154,4 +170,5 @@ Profile.propTypes = {
   currentUser: PropTypes.objectOf(PropTypes.objectOf),
   setCurrentUser: PropTypes.func,
   isLoggedIn: PropTypes.bool,
+  hasError: PropTypes.func,
 };

@@ -8,7 +8,7 @@ import classes from './page-header.module.scss';
 
 const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
   // Устанавливаем флаг, что мы залогинены при перезагрузке страницы
-  useEffect(() => signIn(localStorage.getItem('signIn')));
+  useEffect(() => signIn(localStorage.getItem('signIn')), [signIn]);
 
   // Если мы залогинены, то получаем данные нынешнего пользователя
   if (isLoggedIn || (localStorage.getItem('signIn') && localStorage.getItem('signIn') !== 'false')) {

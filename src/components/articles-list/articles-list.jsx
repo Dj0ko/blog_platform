@@ -1,21 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Pagination } from 'antd';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+import realWorldDbService from '../../services/services';
+
 import Article from '../article/article';
 import Spinner from '../spinner/spinner';
 import ErrorMessage from '../error-message/error-message';
 
-import { articlesFetchDataSuccess, hasError, changePage, hasSpinner } from '../../redux/actions/actions';
-
-import realWorldDbService from '../../services/services';
+import * as actions from '../../redux/actions/actions';
 import classes from './articles-list.module.scss';
 import './pagination.scss';
 
-const ArticlesList = ({ articlesFetchData, articlesList, onChangePage, currentPage, error, location }) => {
-  // Функция обновления компонента
-  useEffect(() => articlesFetchData(currentPage), [articlesFetchData, currentPage, location.pathname]);
+const ArticlesList = ({ articlesFetchDataSuccess, articlesList, error, location, hasError, noArticles }) => {
+  const [page, setPage] = useState(1);
+
+  const articlesFetchData = useCallback(() => {
+    realWorldDbService
+      .getArticlesList(page)
+      .then((data) => {
+        articlesFetchDataSuccess(data);
+      })
+      .catch(() => {
+        hasError(true);
+      });
+  }, [articlesFetchDataSuccess, hasError, page]);
+
+  useEffect(() => articlesFetchData(), [articlesFetchData, page, location]);
 
   const { articles, articlesCount } = articlesList;
 
@@ -35,10 +48,10 @@ const ArticlesList = ({ articlesFetchData, articlesList, onChangePage, currentPa
     <>
       <ul className={classes['articles-list']}>{allArticles}</ul>
       <Pagination
-        current={currentPage}
-        onChange={(page) => {
-          onChangePage(page);
-          articlesFetchData(page);
+        current={page}
+        onChange={(pageNumber) => {
+          noArticles();
+          setPage(pageNumber);
         }}
         total={articlesCount / articles.length}
         defaultPageSize="5"
@@ -50,43 +63,25 @@ const ArticlesList = ({ articlesFetchData, articlesList, onChangePage, currentPa
 
 const mapStateToProps = (state) => ({
   articlesList: state.articlesReducer,
-  currentPage: state.pageReducer,
   error: state.errorReducer,
+  isLoggedIn: state.logInReducer,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onChangePage: (page) => {
-    dispatch(hasSpinner(true));
-    dispatch(changePage(page));
-  },
-  articlesFetchData: (offSet) =>
-    realWorldDbService
-      .getArticlesList(offSet)
-      .then((data) => {
-        if (!data) {
-          dispatch(hasSpinner(true));
-        }
-        dispatch(hasSpinner(false));
-        dispatch(articlesFetchDataSuccess(data));
-      })
-      .catch(() => dispatch(hasError(true))),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ArticlesList));
+export default connect(mapStateToProps, actions)(withRouter(ArticlesList));
 
 ArticlesList.defaultProps = {
-  articlesFetchData: () => {},
   articlesList: [],
-  onChangePage: () => {},
-  currentPage: 1,
   error: false,
+  articlesFetchDataSuccess: () => {},
+  hasError: () => {},
+  noArticles: () => {},
 };
 
 ArticlesList.propTypes = {
-  articlesFetchData: PropTypes.func,
   articlesList: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.number, PropTypes.arrayOf(PropTypes.objectOf)])),
-  onChangePage: PropTypes.func,
-  currentPage: PropTypes.number,
   error: PropTypes.bool,
   location: PropTypes.objectOf(PropTypes.string).isRequired,
+  articlesFetchDataSuccess: PropTypes.func,
+  hasError: PropTypes.func,
+  noArticles: PropTypes.func,
 };

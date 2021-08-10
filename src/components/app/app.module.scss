@@ -12,17 +12,19 @@ $gray: #e5e5e5;
 
 body {
   margin: 0;
-  font-family: $Inter;
 
+  font-family: $Inter;
   font-size: 12px;
   line-height: 22px;
   color: $black;
+
   background-color: $gray;
 }
 
 ul {
   padding: 0;
   margin: 0;
+
   list-style: none;
 }
 

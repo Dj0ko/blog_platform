@@ -28,7 +28,6 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
   color: #262626;
 
   background-color: #ffffff;
-
   border: 1px solid #d9d9d9;
   border-radius: 6px;
   box-shadow: 0px 22px 106px rgba(0, 0, 0, 0.07), 0px 9.19107px 44.2843px rgba(0, 0, 0, 0.0503198),
@@ -40,7 +39,6 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
   font-size: 20px;
   line-height: 28px;
   font-weight: 500;
-
   text-align: center;
 }
 
@@ -53,7 +51,6 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
 .form__field {
   display: flex;
   flex-direction: column;
-
   margin-bottom: 12px;
 }
 
@@ -71,8 +68,8 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
   font-size: 16px;
   line-height: 24px;
   color: #ffffff;
-  background-color: #1890ff;
 
+  background-color: #1890ff;
   border-radius: 4px;
   border-style: none;
 }
@@ -83,6 +80,7 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
 
 .signin-page__text {
   margin-top: 8px;
+
   text-align: center;
 
   &--margin-left {

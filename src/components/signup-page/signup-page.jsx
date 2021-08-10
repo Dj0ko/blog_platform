@@ -1,14 +1,16 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+
 import realWorldDbService from '../../services/services';
 
 import * as actions from '../../redux/actions/actions';
 import classes from './signup-page.module.scss';
 
-const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
+const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasError }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -24,13 +26,18 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors }) => {
 
   // Отправляем форму и проверяем на наличие ошибок от сервера
   const onSubmit = (data) => {
-    realWorldDbService.registrationNewUser(data).then((body) => {
-      if (body.errors) {
-        getServerErrors(body.errors);
-      } else {
-        signUp(true);
-      }
-    });
+    realWorldDbService
+      .registrationNewUser(data)
+      .then((body) => {
+        if (body.errors) {
+          getServerErrors(body.errors);
+        } else {
+          signUp(true);
+        }
+      })
+      .catch(() => {
+        hasError(true);
+      });
   };
 
   // Деструктурируем ошибки
@@ -152,6 +159,7 @@ SignUpPage.defaultProps = {
   isSignedUp: false,
   serverErrors: {},
   getServerErrors: () => {},
+  hasError: () => {},
 };
 
 SignUpPage.propTypes = {
@@ -159,4 +167,5 @@ SignUpPage.propTypes = {
   isSignedUp: PropTypes.bool,
   serverErrors: PropTypes.objectOf(PropTypes.objectOf),
   getServerErrors: PropTypes.func,
+  hasError: PropTypes.func,
 };

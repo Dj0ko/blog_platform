@@ -7,7 +7,6 @@
 .article {
   display: flex;
   justify-content: space-between;
-
   padding-left: 19px;
   padding-right: 14px;
   padding-top: 15px;
@@ -20,7 +19,6 @@
 .article__title {
   font-size: 20px;
   line-height: 28px;
-
   color: #1890ff;
   text-transform: capitalize;
 }
@@ -32,24 +30,26 @@
 
 .article__likes {
   position: relative;
-  margin-left: 34px;
+
+  margin-left: 13px;
 
   color: rgba(0, 0, 0, 0.75);
 
-  &::before {
-    content: '';
-    position: absolute;
-
-    width: 16px;
-    height: 15px;
-
-    left: -19px;
-    top: 3px;
-
-    background-image: url('./like.svg');
-    background-repeat: no-repeat;
-  }
+  cursor: pointer;
+  border: none;
+  background-color: inherit;
 }
+
+.article__likes-image {
+  position: relative;
+  top: 4px;
+
+  margin-right: 5px;
+}
+
+// .article__likes-red {
+//   fill: red;
+// }
 
 .article__text {
   width: 682px;
@@ -70,12 +70,14 @@
 
 .user-info__text-container {
   margin-right: 12px;
+
   text-align: right;
 }
 
 .user-info__text {
-  color: rgba(0, 0, 0, 0.5);
   min-width: 130px;
+
+  color: rgba(0, 0, 0, 0.5);
 
   &--black {
     font-size: 18px;

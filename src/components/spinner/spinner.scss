@@ -2,6 +2,7 @@
 
 .ant-space {
   position: relative;
+
   width: 100%;
   height: 40px;
 }
@@ -10,5 +11,6 @@
   position: absolute;
   top: 40%;
   left: 50%;
+
   transform: translateX(-50%);
 }

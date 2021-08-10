@@ -1,30 +1,34 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import TagsForm from '../tags-form/tags-form';
+import PropTypes from 'prop-types';
+
 import realWorldDbService from '../../services/services';
+
+import TagsForm from '../tags-form/tags-form';
 
 import classes from './new-article.module.scss';
 import * as actions from '../../redux/actions/actions';
 
-const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
-  const userData = () => {
-    if (JSON.stringify(currentUser).length === 2) {
-      return JSON.parse(localStorage.getItem('user'));
-    }
-    return currentUser;
-  };
+// const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
+const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
+  // const userData = () => {
+  //   if (JSON.stringify(currentUser).length === 2) {
+  //     return JSON.parse(localStorage.getItem('user'));
+  //   }
+  //   return currentUser;
+  // };
 
-  const { token } = userData();
   // Деструктурируем useForm()
   const { register, handleSubmit } = useForm({ mode: 'onSubmit' });
 
   const onSubmit = (data) => {
     const newObj = { ...data, tagList };
 
-    realWorldDbService.addNewArticle(newObj, token);
+    realWorldDbService.addNewArticle(newObj).catch(() => {
+      hasError(true);
+    });
   };
 
   if (location.pathname.slice(-4) === 'edit') {
@@ -32,7 +36,7 @@ const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
 
     const onSubmitEdited = (data) => {
       const newObj = { ...data, tagList };
-      realWorldDbService.updateArticle(newObj, slug, token);
+      realWorldDbService.updateArticle(newObj, slug);
     };
 
     return (
@@ -41,7 +45,8 @@ const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
         <form
           onSubmit={handleSubmit(onSubmitEdited)}
           method="PUT"
-          action={`https://conduit.productionready.io/articles/${slug}`}
+          // action={`https://conduit.productionready.io/articles/${slug}`}
+          action={`https://conduit-api-realworld.herokuapp.com/api/articles/${slug}`}
         >
           <label className={classes.form__field}>
             <span>Title</span>
@@ -101,7 +106,12 @@ const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
   return (
     <section className={classes['new-article']}>
       <h2 className={classes['new-article__title']}>Create new article</h2>
-      <form onSubmit={handleSubmit(onSubmit)} method="POST" action="https://conduit.productionready.io/api/articles">
+      {/* <form onSubmit={handleSubmit(onSubmit)} method="POST" action="https://conduit.productionready.io/api/articles"> */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        method="POST"
+        action="https://conduit-api-realworld.herokuapp.com/api/articles"
+      >
         <label className={classes.form__field}>
           <span>Title</span>
           <input
@@ -165,13 +175,14 @@ export default connect(mapStateToProps, actions)(withRouter(NewArticle));
 
 NewArticle.defaultProps = {
   tagList: [],
-  currentUser: {},
+  // currentUser: {},
   addNewArticle: () => {},
+  hasError: () => {},
 };
 
 NewArticle.propTypes = {
   tagList: PropTypes.arrayOf(PropTypes.string),
-  currentUser: PropTypes.objectOf(PropTypes.objectOf),
+  // currentUser: PropTypes.objectOf(PropTypes.objectOf),
   addNewArticle: PropTypes.func,
   currentArticle: PropTypes.objectOf(
     PropTypes.oneOfType([
@@ -183,4 +194,5 @@ NewArticle.propTypes = {
     ])
   ).isRequired,
   location: PropTypes.objectOf(PropTypes.string).isRequired,
+  hasError: PropTypes.func,
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import PageHeader from '../page-header/page-header';
 import ArticlesList from '../articles-list/articles-list';
@@ -25,7 +25,7 @@ const App = ({ loadingState, isLoggedIn }) => (
       <Route path="/sign-up" component={SignUpPage} />
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/profile" component={Profile} />
-      <Route path="/new-article" render={() => (isLoggedIn ? <NewArticle /> : <Redirect to="/sign-in" />)} />
+      <Route path="/new-article" render={() => (isLoggedIn ? <NewArticle /> : <Redirect to="/sign-in" />)} exact />
     </main>
   </Router>
 );
