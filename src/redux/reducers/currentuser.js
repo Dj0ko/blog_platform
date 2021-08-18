@@ -1,4 +1,4 @@
-const currentUserReducer = (state = {}, action) => {
+const currentUser = (state = {}, action) => {
   switch (action.type) {
     case 'SET_CURRENT_USER':
       return action.payload;
@@ -8,4 +8,4 @@ const currentUserReducer = (state = {}, action) => {
   }
 };
 
-export default currentUserReducer;
+export default currentUser;

@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,14 +9,14 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './profile.module.scss';
 
-const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, isLoggedIn, hasError }) => {
+const Profile = ({ setCurrentUser, currentUser, isLoggedIn }) => {
   // Функция, возвращающая нам нынешнего пользователя(если не удается определить пользователя, то пользуемся кешом localStorage)
-  // const userData = () => {
-  //   if (JSON.stringify(currentUser).length === 2) {
-  //     return JSON.parse(localStorage.getItem('user'));
-  //   }
-  //   return currentUser;
-  // };
+  const userData = () => {
+    if (JSON.stringify(currentUser).length === 2) {
+      return JSON.parse(localStorage.getItem('user'));
+    }
+    return currentUser;
+  };
 
   const {
     register,
@@ -25,39 +24,27 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
+  const [serverErrors, setServerErrors] = useState({});
+
   // Отправляем форму с измененными данными
   const onSubmit = (data) => {
     const newObj = {};
 
-    // for (const key in data) {
-    //   if (data[key] !== currentUser[key] && data[key]) {
-    //     newObj[key] = data[key];
-    //   }
-    // }
-
     for (const key in data) {
-      if (data[key] !== JSON.parse(localStorage.getItem('user'))[key] && data[key]) {
+      if (data[key] !== currentUser[key] && data[key]) {
         newObj[key] = data[key];
       }
     }
 
-    realWorldDbService
-      .editProfile(newObj)
-      .then((body) => {
-        if (body.errors) {
-          getServerErrors(body.errors);
-        } else {
-          localStorage.setItem('user', JSON.stringify(body.user));
-          // setCurrentUser(body.user);
-        }
-      })
-      .catch(() => {
-        hasError(true);
-      });
+    realWorldDbService.editProfile(newObj).then((body) => {
+      if (body.errors) {
+        setServerErrors(body.errors);
+      } else {
+        localStorage.setItem('user', JSON.stringify(body.user));
+        setCurrentUser(body.user);
+      }
+    });
   };
-
-  // Деструктурируем ошибки
-  const { email: errorEmail, username: errorUserName } = serverErrors;
 
   // Возвращаемся на главную страницу, если сделали Log Out
   if (!isLoggedIn) {
@@ -65,8 +52,8 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
   }
 
   // Получаем имя пользователя, email
-  // const { username, email } = userData();
-  const { username, email } = JSON.parse(localStorage.getItem('user'));
+  const { username, email } = userData();
+  // const { username, email } = JSON.parse(localStorage.getItem('user'));
 
   return (
     <section className={classes.profile}>
@@ -74,8 +61,7 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
       <form
         className={classes.form}
         method="PUT"
-        // action="https://conduit.productionready.io/api/users"
-        action="https://conduit-api-realworld.herokuapp.com/api/users"
+        action="https://cirosantilli-realworld-express.herokuapp.com/api/users"
         onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className={classes.form__fieldset}>
@@ -92,7 +78,9 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
             {errors.username && (
               <p className={classes.form__error}>Your username needs to be from 3 to 20 characters.</p>
             )}
-            {errorUserName && <p className={classes.form__error}>This username has already use.</p>}
+            {serverErrors[0] === 'username must be unique' && (
+              <p className={classes.form__error}>This username has already use.</p>
+            )}
           </label>
 
           <label className={classes.form__field}>
@@ -107,7 +95,12 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
               {...register('email', { required: true, pattern: /\S+@\S+\.\S+/ })}
             />
             {errors.email && <p className={classes.form__error}>Your mail must be a correct post address.</p>}
-            {errorEmail && <p className={classes.form__error}>This email has already use.</p>}
+            {serverErrors[0] ===
+              'Oops. Looks like you already have an account with this email address. Please try to login.' && (
+              <p className={classes.form__error}>
+                Oops. Looks like you already have an account with this email address. Please try to login.
+              </p>
+            )}
           </label>
 
           <label className={classes.form__field}>
@@ -148,27 +141,20 @@ const Profile = ({ getServerErrors, setCurrentUser, currentUser, serverErrors, i
 };
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.logInReducer,
-  currentUser: state.currentUserReducer,
-  serverErrors: state.serverErrorsReducer,
+  isLoggedIn: state.logIn,
+  currentUser: state.currentUser,
 });
 
 export default connect(mapStateToProps, actions)(Profile);
 
 Profile.defaultProps = {
-  getServerErrors: () => {},
-  serverErrors: {},
   currentUser: {},
   setCurrentUser: () => {},
   isLoggedIn: false,
-  hasError: () => {},
 };
 
 Profile.propTypes = {
-  getServerErrors: PropTypes.func,
-  serverErrors: PropTypes.objectOf(PropTypes.objectOf),
   currentUser: PropTypes.objectOf(PropTypes.objectOf),
   setCurrentUser: PropTypes.func,
   isLoggedIn: PropTypes.bool,
-  hasError: PropTypes.func,
 };

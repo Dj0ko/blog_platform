@@ -1,37 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
 
-import Spinner from '../spinner/spinner';
-import Tags from '../tags/tags';
+import Spinner from '../../pages/spinner/spinner';
+import Tags from '../../pages/tags/tags';
 
-import * as actions from '../../redux/actions/actions';
 import classes from './article-page.module.scss';
 
-const ArticlePage = ({
-  itemId,
-  setCurrentArticle,
-  currentArticle,
-  history,
-  addTag,
-  showModal,
-  isModalOn,
-  hasError,
-}) => {
+const ArticlePage = ({ itemId }) => {
+  // Устанавливаем начальное состояние
+  const [currentArticle, setCurrentArticle] = useState();
+  const [isModal, showModal] = useState(false);
+  const [isDeleted, deleteCurrentArticle] = useState(false);
+
+  const history = useHistory();
+
+  // Получаем выбранную статью
   useEffect(
     () => realWorldDbService.getCurrentArticle(itemId).then((body) => setCurrentArticle(body.article)),
-    [setCurrentArticle, itemId]
+    [itemId]
   );
 
-  if (JSON.stringify(currentArticle).length === 2 || itemId !== currentArticle.slug) {
+  // Если нет статьи, то показываем индикатор загрузки
+  if (!currentArticle) {
     return <Spinner />;
   }
 
+  // Получаем поля статьи
   const {
     title,
     favoritesCount,
@@ -42,11 +41,14 @@ const ArticlePage = ({
     slug,
   } = currentArticle;
 
+  // Кнопка удаления статьи
   const onButtonDelete = () => {
-    realWorldDbService.deleteArticle(slug).catch(() => {
-      hasError(true);
-    });
+    realWorldDbService.deleteArticle(slug).then(() => deleteCurrentArticle(true));
   };
+
+  if (isDeleted) {
+    return <p className={classes.alert}>Статья успешно удалена</p>;
+  }
 
   return (
     <div className={classes['article-page']}>
@@ -81,7 +83,6 @@ const ArticlePage = ({
               type="button"
               className={`${classes.button} ${classes['button--edit']}`}
               onClick={() => {
-                tagList.forEach((tag) => addTag(tag));
                 history.push(`${itemId}/edit`);
               }}
             >
@@ -92,7 +93,7 @@ const ArticlePage = ({
       </section>
       <div className={classes['article-page__main']} id="divForMarkdown" />
       <ReactMarkdown className={classes['article-page__main']}>{currentArticle.body}</ReactMarkdown>
-      {isModalOn ? (
+      {isModal ? (
         <div className={classes['article-page__modal']}>
           <p className={classes['article-page__modal-text']}>Are you sure to delete this article?</p>
           <button
@@ -115,38 +116,8 @@ const ArticlePage = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentArticle: state.currentArticleReducer,
-  isModalOn: state.modalReducer,
-});
-
-export default connect(mapStateToProps, actions)(withRouter(ArticlePage));
-
-ArticlePage.defaultProps = {
-  setCurrentArticle: () => {},
-  addTag: () => {},
-  showModal: () => {},
-  isModalOn: false,
-  hasError: () => {},
-};
+export default ArticlePage;
 
 ArticlePage.propTypes = {
-  currentArticle: PropTypes.objectOf(
-    PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-      PropTypes.bool,
-      PropTypes.arrayOf(PropTypes.objectOf),
-      PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
-    ])
-  ).isRequired,
   itemId: PropTypes.string.isRequired,
-  setCurrentArticle: PropTypes.func,
-  history: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.objectOf(PropTypes.string), PropTypes.func])
-  ).isRequired,
-  addTag: PropTypes.func,
-  showModal: PropTypes.func,
-  isModalOn: PropTypes.bool,
-  hasError: PropTypes.func,
 };

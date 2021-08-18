@@ -10,11 +10,6 @@ export const addNewArticle = (payload) => ({
 
 export const hasError = () => ({ type: 'HAS_ERROR' });
 
-export const signUp = (payload) => ({
-  type: 'SIGN_UP',
-  payload,
-});
-
 export const signIn = (payload) => ({
   type: 'SIGN_IN',
   payload,
@@ -37,16 +32,6 @@ export const addTag = (payload) => ({
 
 export const removeTag = (payload) => ({
   type: 'REMOVE_TAG',
-  payload,
-});
-
-export const setCurrentArticle = (payload) => ({
-  type: 'SET_CURRENT_ARTICLE',
-  payload,
-});
-
-export const showModal = (payload) => ({
-  type: 'SHOW_MODAL',
   payload,
 });
 

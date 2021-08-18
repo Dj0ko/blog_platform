@@ -1,4 +1,4 @@
-const articlesReducer = (state = {}, action) => {
+const articles = (state = {}, action) => {
   switch (action.type) {
     case 'ARTICLES_FETCH_DATA_SUCCESS':
       return { ...state, ...action.articles };
@@ -11,4 +11,4 @@ const articlesReducer = (state = {}, action) => {
   }
 };
 
-export default articlesReducer;
+export default articles;

@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,7 +9,7 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './signup-page.module.scss';
 
-const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasError }) => {
+const SignUpPage = ({ signIn, isLoggedIn }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -19,9 +18,11 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
     formState: { errors },
   } = useForm({ mode: 'onSubmit' });
 
-  // Переходим на страничку Логина, если прошли регистрацию
-  if (isSignedUp) {
-    return <Redirect to="/sign-in" />;
+  const [serverErrors, setServerErrors] = useState({});
+
+  // Переходим на страницу статей, если успешно прошли регистрацию
+  if (isLoggedIn) {
+    return <Redirect to="/articles/" />;
   }
 
   // Отправляем форму и проверяем на наличие ошибок от сервера
@@ -30,18 +31,18 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
       .registrationNewUser(data)
       .then((body) => {
         if (body.errors) {
-          getServerErrors(body.errors);
+          setServerErrors(body.errors);
         } else {
-          signUp(true);
+          localStorage.setItem('user', JSON.stringify(body.user));
+          localStorage.setItem('signIn', true);
+          signIn(true);
         }
       })
-      .catch(() => {
-        hasError(true);
-      });
+      .catch(() => setServerErrors('invalid'));
   };
 
   // Деструктурируем ошибки
-  const { email, username } = serverErrors;
+  // const { email, username } = serverErrors;
 
   return (
     <section className={classes['signup-page']}>
@@ -49,7 +50,7 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
       <form
         className={classes.form}
         method="POST"
-        action="https://conduit.productionready.io/api/users"
+        action="https://cirosantilli-realworld-express.herokuapp.com/api/users"
         onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className={classes.form__fieldset}>
@@ -66,7 +67,7 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
             {errors.username && (
               <p className={classes.form__error}>Your username needs to be from 3 to 20 characters.</p>
             )}
-            {username && <p className={classes.form__error}>This username has already use.</p>}
+            {/* {username && <p className={classes.form__error}>This username has already use.</p>} */}
           </label>
 
           <label className={classes.form__field}>
@@ -80,7 +81,10 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
               {...register('email', { required: true, pattern: /\S+@\S+\.\S+/ })}
             />
             {errors.email && <p className={classes.form__error}>Your mail must be a correct post address.</p>}
-            {email && <p className={classes.form__error}>This email has already use.</p>}
+            {/* {email && <p className={classes.form__error}>This email has already use.</p>} */}
+            {serverErrors === 'invalid' && (
+              <p className={classes.form__error}>Probably, this username or this email has already use.</p>
+            )}
           </label>
 
           <label className={classes.form__field}>
@@ -148,24 +152,17 @@ const SignUpPage = ({ signUp, isSignedUp, getServerErrors, serverErrors, hasErro
 };
 
 const mapStateToProps = (state) => ({
-  isSignedUp: state.signUpReducer,
-  serverErrors: state.serverErrorsReducer,
+  isLoggedIn: state.logIn,
 });
 
 export default connect(mapStateToProps, actions)(SignUpPage);
 
 SignUpPage.defaultProps = {
-  signUp: () => {},
-  isSignedUp: false,
-  serverErrors: {},
-  getServerErrors: () => {},
-  hasError: () => {},
+  signIn: () => {},
+  isLoggedIn: false,
 };
 
 SignUpPage.propTypes = {
-  signUp: PropTypes.func,
-  isSignedUp: PropTypes.bool,
-  serverErrors: PropTypes.objectOf(PropTypes.objectOf),
-  getServerErrors: PropTypes.func,
-  hasError: PropTypes.func,
+  signIn: PropTypes.func,
+  isLoggedIn: PropTypes.bool,
 };

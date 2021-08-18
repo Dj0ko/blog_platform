@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Tag from '../tag/tag';
 
-import * as actions from '../../redux/actions/actions';
 import classes from './tags-form.module.scss';
 
-const TagsForm = ({ tagsList, addTag }) => {
+const TagsForm = ({ tagList, addTag, deleteTag }) => {
   const [label, setLabel] = useState('');
 
   const onLabelChange = (evt) => {
@@ -19,9 +17,9 @@ const TagsForm = ({ tagsList, addTag }) => {
     setLabel('');
   };
 
-  const allTags = tagsList.map((tag, index) => (
+  const allTags = tagList.map((tag, index) => (
     <li key={tag}>
-      <Tag tag={tag} id={index} />
+      <Tag tag={tag} id={index} deleteTag={() => deleteTag(index)} />
     </li>
   ));
 
@@ -55,19 +53,16 @@ const TagsForm = ({ tagsList, addTag }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  tagsList: state.tagsReducer,
-  isEditOn: state.editReducer,
-});
-
-export default connect(mapStateToProps, actions)(TagsForm);
+export default TagsForm;
 
 TagsForm.defaultProps = {
-  tagsList: [],
+  tagList: [],
   addTag: () => {},
+  deleteTag: () => {},
 };
 
 TagsForm.propTypes = {
-  tagsList: PropTypes.arrayOf(PropTypes.string),
+  tagList: PropTypes.arrayOf(PropTypes.string),
   addTag: PropTypes.func,
+  deleteTag: PropTypes.func,
 };

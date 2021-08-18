@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { format } from 'date-fns';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
 
-import Tags from '../tags/tags';
+import Tags from '../../pages/tags/tags';
 
-import * as actions from '../../redux/actions/actions';
 import classes from './article.module.scss';
 
-const Article = ({ article, history, location, hasError }) => {
+const Article = ({ article }) => {
+  // Получаем поля статей
   const {
     title,
     favoritesCount,
@@ -23,43 +22,52 @@ const Article = ({ article, history, location, hasError }) => {
     favorited,
   } = article;
 
-  const [likesCount, setLikesCount] = useState(favoritesCount);
-  const [isLike, setLike] = useState();
+  // Получаем доступ к объекту history
+  const history = useHistory();
 
+  // Открытие статьи в зависимости от адреса
+  const handleClick = () => {
+    if (history.location.pathname === '/') {
+      history.push(`articles/${slug}`);
+    } else {
+      history.push(slug);
+    }
+  };
+
+  // Устанавливаем начальные состояния
+  const [likesCount, setLikesCount] = useState(favoritesCount);
+  const [isLike, setLike] = useState(false);
+
+  // Установка "Мне нравится" при загрузке статей
   useEffect(() => {
     if (favorited) {
       setLike(true);
+    } else {
+      setLike(false);
     }
   }, [favorited]);
 
+  // Функция, добавляющая "Мне нравится" для статьи
   const rateArticle = () => {
-    realWorldDbService
-      .rateArticle(slug)
-      .then((body) => {
-        if (body.article.favorited) {
-          setLikesCount(body.article.favoritesCount);
-          setLike(true);
-        }
-      })
-      .catch(() => {
-        hasError(true);
-      });
+    realWorldDbService.rateArticle(slug).then((body) => {
+      if (body.article.favorited) {
+        setLikesCount(body.article.favoritesCount);
+        setLike(true);
+      }
+    });
   };
 
+  // Функция, удаляющая "Мне нравится" для статьи
   const unRateArticle = () => {
-    realWorldDbService
-      .unRateArticle(slug)
-      .then((body) => {
-        if (!body.article.favorited) {
-          setLikesCount(body.article.favoritesCount);
-          setLike(false);
-        }
-      })
-      .catch(() => {
-        hasError(true);
-      });
+    realWorldDbService.unRateArticle(slug).then((body) => {
+      if (!body.article.favorited) {
+        setLikesCount(body.article.favoritesCount);
+        setLike(false);
+      }
+    });
   };
 
+  // Установка "Мне нравится" по клику на кнопку
   const onButtonLike = () => {
     if (!isLike) {
       rateArticle();
@@ -74,18 +82,7 @@ const Article = ({ article, history, location, hasError }) => {
         <div>
           <div className={classes['article__title-container']}>
             <h2 className={classes.article__title}>
-              <a
-                role="button"
-                onClick={() => {
-                  if (location.pathname.slice(-9) === 'articles/') {
-                    history.push(slug);
-                  } else {
-                    history.push(`articles/${slug}`);
-                  }
-                }}
-                onKeyDown={() => history.push(`articles/${slug}`)}
-                tabIndex={0}
-              >
+              <a role="button" onClick={handleClick} onKeyDown={handleClick} tabIndex={0}>
                 {title}
               </a>
             </h2>
@@ -123,11 +120,10 @@ const Article = ({ article, history, location, hasError }) => {
   );
 };
 
-export default connect(null, actions)(withRouter(Article));
+export default Article;
 
 Article.defaultProps = {
   article: {},
-  hasError: () => {},
 };
 
 Article.propTypes = {
@@ -140,9 +136,4 @@ Article.propTypes = {
       PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
     ])
   ),
-  history: PropTypes.objectOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.objectOf(PropTypes.string), PropTypes.func])
-  ).isRequired,
-  location: PropTypes.objectOf(PropTypes.string).isRequired,
-  hasError: PropTypes.func,
 };

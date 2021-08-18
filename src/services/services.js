@@ -1,7 +1,7 @@
 class RealWorldDbService {
   // apiBase = `https://conduit.productionready.io/api`;
 
-  apiBase = `https://conduit-api-realworld.herokuapp.com/api`;
+  apiBase = `https://cirosantilli-realworld-express.herokuapp.com/api`;
 
   // Проверяем авторизован ли пользователь или нет
   getToken() {
@@ -49,6 +49,14 @@ class RealWorldDbService {
       body: JSON.stringify(newUser),
     });
 
+    if (
+      !res.ok &&
+      res.status !== 422
+      // && res.status !== 404
+    ) {
+      throw new Error();
+    }
+
     const body = await res.json();
 
     return body;
@@ -67,6 +75,10 @@ class RealWorldDbService {
       },
       body: JSON.stringify(newUser),
     });
+
+    if (!res.ok && res.status !== 422) {
+      throw new Error();
+    }
 
     const body = await res.json();
 
@@ -93,6 +105,10 @@ class RealWorldDbService {
         : null
     );
 
+    if (!res.ok && res.status !== 422) {
+      throw new Error();
+    }
+
     const body = await res.json();
 
     return body;
@@ -118,6 +134,10 @@ class RealWorldDbService {
         : null
     );
 
+    if (!res.ok) {
+      throw new Error();
+    }
+
     const body = await res.json();
 
     return body;
@@ -125,21 +145,14 @@ class RealWorldDbService {
 
   // Функция, получающая заданную статью
   async getCurrentArticle(slug) {
-    const res = await fetch(
-      `${this.apiBase}/articles/${slug}`
-      // , {
-      //   headers: {
-      //     'Content-Type': 'application/json;charset=utf-8',
-      //     Authorization: `Token ${this.token}`,
-      //   }
-      //   }
-    );
+    const res = await fetch(`${this.apiBase}/articles/${slug}`);
 
     if (!res.ok) {
       throw new Error();
     }
 
     const body = await res.json();
+
     return body;
   }
 
@@ -163,6 +176,10 @@ class RealWorldDbService {
         : null
     );
 
+    if (!res.ok) {
+      throw new Error();
+    }
+
     const body = await res.json();
 
     return body;
@@ -170,7 +187,7 @@ class RealWorldDbService {
 
   // Функция для удаления статьи(для авторизованных пользователей)
   async deleteArticle(slug) {
-    const res = await fetch(
+    return fetch(
       `${this.apiBase}/articles/${slug}`,
       this.getToken()
         ? {
@@ -182,10 +199,6 @@ class RealWorldDbService {
           }
         : null
     );
-
-    const body = await res.json();
-
-    return body;
   }
 
   // Функция для добавления отметки "Мне нравится"(для авторизованных пользователей)
@@ -202,6 +215,10 @@ class RealWorldDbService {
           }
         : null
     );
+
+    if (!res.ok) {
+      throw new Error();
+    }
 
     const body = await res.json();
 
@@ -222,6 +239,10 @@ class RealWorldDbService {
           }
         : null
     );
+
+    if (!res.ok) {
+      throw new Error();
+    }
 
     const body = await res.json();
 

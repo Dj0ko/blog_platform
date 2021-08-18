@@ -216,3 +216,10 @@ $Roboto: 'Roboto', 'Arial', sans-serif;
     color: rgba(0, 0, 0, 0.85);
   }
 }
+
+.alert {
+  font-family: $Roboto;
+  width: 400px;
+  margin: 0 auto;
+  font-size: 28px;
+}

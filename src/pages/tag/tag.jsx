@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as actions from '../../redux/actions/actions';
 import classes from './tag.module.scss';
 
-const Tag = ({ tag, id, removeTag }) => (
+const Tag = ({ tag, deleteTag }) => (
   <>
     <input
       className={`${classes.form__input} ${classes['form__input--tag']}`}
@@ -18,9 +18,7 @@ const Tag = ({ tag, id, removeTag }) => (
     <button
       type="button"
       className={`${classes.form__button} ${classes['form__button--control']} ${classes['form__button--delete']}`}
-      onClick={() => {
-        removeTag(id);
-      }}
+      onClick={deleteTag}
     >
       Delete
     </button>
@@ -31,11 +29,10 @@ export default connect(null, actions)(Tag);
 
 Tag.defaultProps = {
   tag: '',
-  removeTag: () => {},
+  deleteTag: () => {},
 };
 
 Tag.propTypes = {
   tag: PropTypes.string,
-  removeTag: PropTypes.func,
-  id: PropTypes.number.isRequired,
+  deleteTag: PropTypes.func,
 };

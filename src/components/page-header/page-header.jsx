@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import * as actions from '../../redux/actions/actions';
@@ -9,6 +9,7 @@ import classes from './page-header.module.scss';
 const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
   // Устанавливаем флаг, что мы залогинены при перезагрузке страницы
   useEffect(() => signIn(localStorage.getItem('signIn')), [signIn]);
+  const history = useHistory();
 
   // Если мы залогинены, то получаем данные нынешнего пользователя
   if (isLoggedIn || (localStorage.getItem('signIn') && localStorage.getItem('signIn') !== 'false')) {
@@ -25,7 +26,7 @@ const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
     // Рендерим, если залогинены
     return (
       <header className={classes['page-header']}>
-        <Link to="/">
+        <Link to="/articles/">
           <h1 className={classes.title}>Realworld Blog</h1>
         </Link>
         <div>
@@ -38,7 +39,13 @@ const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
           </Link>
           <Link to="/profile">
             <span className={classes.user__text}>{username}</span>
-            <img src={image} className={classes.user__image} width="46px" height="46px" alt="user avatar" />
+            <img
+              src={image || 'https://static.productionready.io/images/smiley-cyrus.jpg'}
+              className={classes.user__image}
+              width="46px"
+              height="46px"
+              alt="user avatar"
+            />
           </Link>
           <button
             type="button"
@@ -46,6 +53,7 @@ const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
             onClick={() => {
               signIn(false);
               localStorage.clear();
+              history.go('/');
             }}
           >
             Log Out
@@ -77,8 +85,8 @@ const PageHeader = ({ isLoggedIn, signIn, currentUser }) => {
 };
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.logInReducer,
-  currentUser: state.currentUserReducer,
+  isLoggedIn: state.logIn,
+  currentUser: state.currentUser,
 });
 
 export default connect(mapStateToProps, actions)(PageHeader);

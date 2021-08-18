@@ -10,7 +10,7 @@ import SignUpPage from '../signup-page/signup-page';
 import SignInPage from '../signin-page/signin-page';
 import Profile from '../profile/profile';
 import NewArticle from '../new-article/new-article';
-import Spinner from '../spinner/spinner';
+import Spinner from '../../pages/spinner/spinner';
 
 import classes from './app.module.scss';
 
@@ -32,7 +32,7 @@ const App = ({ loadingState, isLoggedIn }) => (
 
 const mapStateToProps = (state) => ({
   loadingState: state.loadingReducer,
-  isLoggedIn: state.logInReducer,
+  isLoggedIn: state.logIn,
 });
 
 export default connect(mapStateToProps, null)(App);

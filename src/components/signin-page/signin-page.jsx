@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,7 +9,7 @@ import realWorldDbService from '../../services/services';
 import * as actions from '../../redux/actions/actions';
 import classes from './signin-page.module.scss';
 
-const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurrentUser, hasError }) => {
+const SignInPage = ({ isLoggedIn, signIn }) => {
   // Деструктурируем useForm()
   const {
     register,
@@ -18,6 +17,7 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
     formState: { errors },
   } = useForm({ mode: 'onSubmit' });
 
+  const [serverErrors, setServerErrors] = useState({});
   // Если логин прошел удачно, то переходим на страницу статей
   if (isLoggedIn) {
     return <Redirect to="/articles/" />;
@@ -25,21 +25,15 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
 
   // Отправляем форму и проверяем на наличие ошибок от сервера
   const onSubmit = (data) => {
-    realWorldDbService
-      .loginUser(data)
-      .then((body) => {
-        if (body.errors) {
-          getServerErrors(body.errors);
-        } else {
-          localStorage.setItem('user', JSON.stringify(body.user));
-          localStorage.setItem('signIn', true);
-          // setCurrentUser(body.user);
-          signIn(true);
-        }
-      })
-      .catch(() => {
-        hasError(true);
-      });
+    realWorldDbService.loginUser(data).then((body) => {
+      if (body.errors) {
+        setServerErrors(body.errors);
+      } else {
+        localStorage.setItem('user', JSON.stringify(body.user));
+        localStorage.setItem('signIn', true);
+        signIn(true);
+      }
+    });
   };
 
   return (
@@ -48,7 +42,7 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
       <form
         className={classes.form}
         method="POST"
-        action="https://conduit.productionready.io/api/users/login"
+        action="https://cirosantilli-realworld-express.herokuapp.com/api/users/login"
         onSubmit={handleSubmit(onSubmit)}
       >
         <fieldset className={classes.form__fieldset}>
@@ -96,26 +90,17 @@ const SignInPage = ({ isLoggedIn, getServerErrors, serverErrors, signIn, setCurr
 };
 
 const mapStateToProps = (state) => ({
-  serverErrors: state.serverErrorsReducer,
-  isLoggedIn: state.logInReducer,
+  isLoggedIn: state.logIn,
 });
 
 export default connect(mapStateToProps, actions)(SignInPage);
 
 SignInPage.defaultProps = {
   isLoggedIn: false,
-  getServerErrors: () => {},
-  serverErrors: {},
   signIn: () => {},
-  setCurrentUser: () => {},
-  hasError: () => {},
 };
 
 SignInPage.propTypes = {
   isLoggedIn: PropTypes.bool,
-  getServerErrors: PropTypes.func,
-  serverErrors: PropTypes.objectOf(PropTypes.objectOf),
   signIn: PropTypes.func,
-  setCurrentUser: PropTypes.func,
-  hasError: PropTypes.func,
 };

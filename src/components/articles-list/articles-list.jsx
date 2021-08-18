@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
 
 import Article from '../article/article';
-import Spinner from '../spinner/spinner';
-import ErrorMessage from '../error-message/error-message';
+import Spinner from '../../pages/spinner/spinner';
+import ErrorMessage from '../../pages/error-message/error-message';
 
 import * as actions from '../../redux/actions/actions';
 import classes from './articles-list.module.scss';
@@ -30,7 +30,7 @@ const ArticlesList = ({ articlesFetchDataSuccess, articlesList, error, location,
 
   useEffect(() => articlesFetchData(), [articlesFetchData, page, location]);
 
-  const { articles, articlesCount } = articlesList;
+  const { articles } = articlesList;
 
   if (error) {
     return <ErrorMessage />;
@@ -53,7 +53,7 @@ const ArticlesList = ({ articlesFetchDataSuccess, articlesList, error, location,
           noArticles();
           setPage(pageNumber);
         }}
-        total={articlesCount / articles.length}
+        total={articlesList.articlesCount}
         defaultPageSize="5"
         className={classes['articles-list__pagination']}
       />
@@ -62,9 +62,9 @@ const ArticlesList = ({ articlesFetchDataSuccess, articlesList, error, location,
 };
 
 const mapStateToProps = (state) => ({
-  articlesList: state.articlesReducer,
-  error: state.errorReducer,
-  isLoggedIn: state.logInReducer,
+  articlesList: state.articles,
+  error: state.error,
+  isLoggedIn: state.logIn,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ArticlesList));

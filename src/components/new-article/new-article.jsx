@@ -1,39 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
 
-import TagsForm from '../tags-form/tags-form';
+import TagsForm from '../../pages/tags-form/tags-form';
 
 import classes from './new-article.module.scss';
-import * as actions from '../../redux/actions/actions';
 
-// const NewArticle = ({ tagList, currentUser, currentArticle, location }) => {
-const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
-  // const userData = () => {
-  //   if (JSON.stringify(currentUser).length === 2) {
-  //     return JSON.parse(localStorage.getItem('user'));
-  //   }
-  //   return currentUser;
-  // };
-
+const NewArticle = ({ itemId }) => {
   // Деструктурируем useForm()
   const { register, handleSubmit } = useForm({ mode: 'onSubmit' });
+  const [tagList, setTag] = useState([]);
 
+  // Добавляем тег
+  const addTag = (label) => {
+    setTag([label, ...tagList]);
+  };
+
+  const deleteTag = (id) => {
+    setTag([...tagList.slice(0, id), ...tagList.slice(id + 1)]);
+  };
+
+  // Получаем доступ к объектам routeMatch и history
+  const routeMatch = useRouteMatch();
+  const history = useHistory();
+
+  // Устанавливаем начальное состояние
+  const [current, setCurrent] = useState({});
+
+  // Получаем выбранную статью
+  useEffect(() => {
+    if (itemId) {
+      realWorldDbService.getCurrentArticle(itemId).then((body) => setCurrent(body.article));
+    }
+  }, [itemId]);
+
+  // Добавляем статью
   const onSubmit = (data) => {
     const newObj = { ...data, tagList };
 
-    realWorldDbService.addNewArticle(newObj).catch(() => {
-      hasError(true);
+    realWorldDbService.addNewArticle(newObj).then(() => {
+      history.go('/');
     });
   };
 
-  if (location.pathname.slice(-4) === 'edit') {
-    const { title, description, body, slug } = currentArticle;
+  // Рендерим, если включен режим редактирования
+  if (routeMatch.url === `/articles/${itemId}/edit`) {
+    const { title, description, body, slug } = current;
 
+    // Изменяе статью
     const onSubmitEdited = (data) => {
       const newObj = { ...data, tagList };
       realWorldDbService.updateArticle(newObj, slug);
@@ -45,8 +62,7 @@ const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
         <form
           onSubmit={handleSubmit(onSubmitEdited)}
           method="PUT"
-          // action={`https://conduit.productionready.io/articles/${slug}`}
-          action={`https://conduit-api-realworld.herokuapp.com/api/articles/${slug}`}
+          action={`https://cirosantilli-realworld-express.herokuapp.com/api/articles/${slug}`}
         >
           <label className={classes.form__field}>
             <span>Title</span>
@@ -92,7 +108,7 @@ const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
 
           <fieldset className={classes.form__field}>
             <span>Tags</span>
-            <TagsForm />
+            <TagsForm addTag={addTag} deleteTag={deleteTag} tagList={tagList} />
           </fieldset>
 
           <button type="submit" className={`${classes.form__button} ${classes['form__button--new-article']}`}>
@@ -106,11 +122,10 @@ const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
   return (
     <section className={classes['new-article']}>
       <h2 className={classes['new-article__title']}>Create new article</h2>
-      {/* <form onSubmit={handleSubmit(onSubmit)} method="POST" action="https://conduit.productionready.io/api/articles"> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         method="POST"
-        action="https://conduit-api-realworld.herokuapp.com/api/articles"
+        action="https://cirosantilli-realworld-express.herokuapp.com/api/articles"
       >
         <label className={classes.form__field}>
           <span>Title</span>
@@ -153,7 +168,7 @@ const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
 
         <div className={classes.form__field}>
           <span>Tags</span>
-          <TagsForm />
+          <TagsForm addTag={addTag} deleteTag={deleteTag} tagList={tagList} />
         </div>
 
         <button type="submit" className={`${classes.form__button} ${classes['form__button--new-article']}`}>
@@ -164,35 +179,12 @@ const NewArticle = ({ tagList, currentArticle, location, hasError }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  tagList: state.tagsReducer,
-  currentUser: state.currentUserReducer,
-  isEditOn: state.editReducer,
-  currentArticle: state.currentArticleReducer,
-});
-
-export default connect(mapStateToProps, actions)(withRouter(NewArticle));
+export default NewArticle;
 
 NewArticle.defaultProps = {
-  tagList: [],
-  // currentUser: {},
-  addNewArticle: () => {},
-  hasError: () => {},
+  itemId: '',
 };
 
 NewArticle.propTypes = {
-  tagList: PropTypes.arrayOf(PropTypes.string),
-  // currentUser: PropTypes.objectOf(PropTypes.objectOf),
-  addNewArticle: PropTypes.func,
-  currentArticle: PropTypes.objectOf(
-    PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-      PropTypes.bool,
-      PropTypes.arrayOf(PropTypes.objectOf),
-      PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.bool])),
-    ])
-  ).isRequired,
-  location: PropTypes.objectOf(PropTypes.string).isRequired,
-  hasError: PropTypes.func,
+  itemId: PropTypes.string,
 };
