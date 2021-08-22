@@ -122,7 +122,7 @@ const Profile = ({ setCurrentUser, currentUser, isLoggedIn }) => {
             <span>Avatar image (url)</span>
             <input
               className={classes.form__input}
-              type="text"
+              type="url"
               id="Avatar image (url)"
               name="image"
               placeholder="Avatar image"

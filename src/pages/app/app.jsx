@@ -10,7 +10,7 @@ import SignUpPage from '../signup-page/signup-page';
 import SignInPage from '../signin-page/signin-page';
 import Profile from '../profile/profile';
 import NewArticle from '../new-article/new-article';
-import Spinner from '../../pages/spinner/spinner';
+import Spinner from '../../components/spinner/spinner';
 
 import classes from './app.module.scss';
 

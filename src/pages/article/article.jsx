@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
 
-import Tags from '../../pages/tags/tags';
+import Tags from '../../components/tags/tags';
 
 import classes from './article.module.scss';
 
@@ -27,11 +27,7 @@ const Article = ({ article }) => {
 
   // Открытие статьи в зависимости от адреса
   const handleClick = () => {
-    if (history.location.pathname === '/') {
-      history.push(`articles/${slug}`);
-    } else {
-      history.push(slug);
-    }
+    history.push(`/articles/${slug}`);
   };
 
   // Устанавливаем начальные состояния

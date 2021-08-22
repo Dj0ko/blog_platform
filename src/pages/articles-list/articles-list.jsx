@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import realWorldDbService from '../../services/services';
 
 import Article from '../article/article';
-import Spinner from '../../pages/spinner/spinner';
-import ErrorMessage from '../../pages/error-message/error-message';
+import Spinner from '../../components/spinner/spinner';
+import ErrorMessage from '../../components/error-message/error-message';
 
 import * as actions from '../../redux/actions/actions';
 import classes from './articles-list.module.scss';

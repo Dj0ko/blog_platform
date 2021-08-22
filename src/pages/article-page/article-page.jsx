@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
 
-import Spinner from '../../pages/spinner/spinner';
-import Tags from '../../pages/tags/tags';
+import Spinner from '../../components/spinner/spinner';
+import Tags from '../../components/tags/tags';
 
 import classes from './article-page.module.scss';
 
