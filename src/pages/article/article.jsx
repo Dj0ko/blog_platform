@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import realWorldDbService from '../../services/services';
@@ -21,14 +21,6 @@ const Article = ({ article }) => {
     author: { image, username },
     favorited,
   } = article;
-
-  // Получаем доступ к объекту history
-  const history = useHistory();
-
-  // Открытие статьи в зависимости от адреса
-  const handleClick = () => {
-    history.push(`/articles/${slug}`);
-  };
 
   // Устанавливаем начальные состояния
   const [likesCount, setLikesCount] = useState(favoritesCount);
@@ -78,9 +70,7 @@ const Article = ({ article }) => {
         <div>
           <div className={classes['article__title-container']}>
             <h2 className={classes.article__title}>
-              <a role="button" onClick={handleClick} onKeyDown={handleClick} tabIndex={0}>
-                {title}
-              </a>
+              <Link to={`/articles/${slug}`}>{title}</Link>
             </h2>
             <button type="button" className={classes.article__likes} onClick={onButtonLike}>
               <svg

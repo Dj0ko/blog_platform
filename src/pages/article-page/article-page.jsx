@@ -43,7 +43,10 @@ const ArticlePage = ({ itemId }) => {
 
   // Кнопка удаления статьи
   const onButtonDelete = () => {
-    realWorldDbService.deleteArticle(slug).then(() => deleteCurrentArticle(true));
+    realWorldDbService.deleteArticle(slug).then(() => {
+      deleteCurrentArticle(true);
+      setTimeout(() => history.push('/'), 1000);
+    });
   };
 
   if (isDeleted) {

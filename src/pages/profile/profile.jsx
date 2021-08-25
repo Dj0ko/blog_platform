@@ -53,7 +53,6 @@ const Profile = ({ setCurrentUser, currentUser, isLoggedIn }) => {
 
   // Получаем имя пользователя, email
   const { username, email } = userData();
-  // const { username, email } = JSON.parse(localStorage.getItem('user'));
 
   return (
     <section className={classes.profile}>
@@ -126,9 +125,9 @@ const Profile = ({ setCurrentUser, currentUser, isLoggedIn }) => {
               id="Avatar image (url)"
               name="image"
               placeholder="Avatar image"
-              {...register('image')}
+              {...register('image', { pattern: /^https?:\/\/\S+(?:jpg|jpeg|png)$/ })}
             />
-            {errors.repeatPassword && <p className={classes.form__error}>The passwords do not match.</p>}
+            {errors.image && <p className={classes.form__error}>Your url must be a correct url address.</p>}
           </label>
         </fieldset>
 

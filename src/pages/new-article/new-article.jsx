@@ -42,9 +42,6 @@ const NewArticle = ({ itemId }) => {
     return <Spinner />;
   }
 
-  // Получаем необходимые поля
-  // const { title, description, body } = current;
-
   // Добавляем статью
   const onSubmit = (data) => {
     const newObj = { ...data, tagList };
