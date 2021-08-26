@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { format } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -9,9 +10,10 @@ import realWorldDbService from '../../services/services';
 import Spinner from '../../components/spinner/spinner';
 import Tags from '../../components/tags/tags';
 
+import * as actions from '../../redux/actions/actions';
 import classes from './article-page.module.scss';
 
-const ArticlePage = ({ itemId }) => {
+const ArticlePage = ({ itemId, noArticles }) => {
   // Устанавливаем начальное состояние
   const [currentArticle, setCurrentArticle] = useState();
   const [isModal, showModal] = useState(false);
@@ -45,6 +47,7 @@ const ArticlePage = ({ itemId }) => {
   const onButtonDelete = () => {
     realWorldDbService.deleteArticle(slug).then(() => {
       deleteCurrentArticle(true);
+      noArticles();
       setTimeout(() => history.push('/'), 1000);
     });
   };
@@ -119,8 +122,13 @@ const ArticlePage = ({ itemId }) => {
   );
 };
 
-export default ArticlePage;
+export default connect(null, actions)(ArticlePage);
+
+ArticlePage.defaultProps = {
+  noArticles: () => {},
+};
 
 ArticlePage.propTypes = {
   itemId: PropTypes.string.isRequired,
+  noArticles: PropTypes.func,
 };
